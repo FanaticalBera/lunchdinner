@@ -102,21 +102,20 @@ export const QuickResultScreen: React.FC<Props> = ({ onRestart, onSelectFlow }) 
                         className="w-full"
                     >
                         <BottomActionBar>
-                            <div className="flex flex-col gap-2.5 w-full">
+                            <div className="flex flex-col items-center gap-3 w-full">
                                 <PrimaryButton
                                     onClick={onRestart}
                                     className="w-full"
                                 >
                                     맘에 안 들어, 다시 추천해!
                                 </PrimaryButton>
-                                <PrimaryButton
-                                    variant="outline"
+                                <button
                                     onClick={onSelectFlow}
-                                    className="w-full flex items-center justify-center gap-2"
+                                    className="flex items-center gap-1.5 text-sm text-[var(--text-helper)] hover:text-[var(--text-secondary)] transition-colors py-1"
                                 >
-                                    <ArrowsLeftRight weight="bold" size={18} />
-                                    이럴 바엔 내가 직접 비교할래
-                                </PrimaryButton>
+                                    <ArrowsLeftRight weight="bold" size={14} />
+                                    <span>이럴 바엔 내가 직접 비교할래</span>
+                                </button>
                             </div>
                         </BottomActionBar>
                     </motion.div>
