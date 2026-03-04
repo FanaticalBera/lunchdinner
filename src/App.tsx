@@ -37,10 +37,14 @@ function App() {
         setCurrentStep('compare1');
     };
 
+    const handleRandomPick = () => {
+        setCurrentStep('quick1');
+    };
+
     const renderScreen = () => {
         switch (currentStep) {
             case 'intro':
-                return <IntroScreen onSelectMode={handleModeSelect} />;
+                return <IntroScreen onSelectMode={handleModeSelect} onRandomPick={handleRandomPick} />;
             case 'flowSelect':
                 return <FlowSelectScreen onSelectFlow={handleFlowSelect} onBack={() => setCurrentStep('intro')} />;
 
@@ -61,7 +65,7 @@ function App() {
                 return <ResultScreen onRestart={handleRestart} onReWeight={handleReWeight} />;
 
             default:
-                return <IntroScreen onSelectMode={handleModeSelect} />;
+                return <IntroScreen onSelectMode={handleModeSelect} onRandomPick={handleRandomPick} />;
         }
     };
 

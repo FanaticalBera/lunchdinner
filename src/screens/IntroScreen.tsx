@@ -1,9 +1,10 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Sun, Moon, Sparkle } from '@phosphor-icons/react';
+import { Sun, Moon, Sparkle, Shuffle } from '@phosphor-icons/react';
 
 interface IntroScreenProps {
     onSelectMode: (mode: 'lunch' | 'dinner') => void;
+    onRandomPick: () => void;
 }
 
 const containerVariants = {
@@ -26,7 +27,7 @@ const itemVariants = {
     }
 };
 
-export const IntroScreen: React.FC<IntroScreenProps> = ({ onSelectMode }) => {
+export const IntroScreen: React.FC<IntroScreenProps> = ({ onSelectMode, onRandomPick }) => {
     return (
         <motion.div
             className="flex flex-col items-center justify-center w-full min-h-[100dvh] relative overflow-hidden bg-[var(--bg-color)] px-6 py-12 gap-12"
@@ -93,6 +94,18 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({ onSelectMode }) => {
                             <span className="text-[var(--text-secondary)] text-sm mt-0.5">피로를 녹여줄 완벽한 보상</span>
                         </div>
                     </div>
+                </motion.button>
+
+                {/* Random Pick Sub-button */}
+                <motion.button
+                    variants={itemVariants}
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.97 }}
+                    onClick={onRandomPick}
+                    className="flex items-center justify-center gap-2 py-3 text-[var(--text-secondary)] hover:text-emerald-500 transition-colors duration-200"
+                >
+                    <Shuffle weight="bold" size={16} />
+                    <span className="text-sm font-medium">그냥 아무거나 골라줘</span>
                 </motion.button>
             </div>
         </motion.div>
