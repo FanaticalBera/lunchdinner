@@ -1,12 +1,12 @@
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion, type Variants } from 'framer-motion';
 import { Sun, Moon, Sparkle } from '@phosphor-icons/react';
 
 interface IntroScreenProps {
     onSelectMode: (mode: 'lunch' | 'dinner') => void;
 }
 
-const containerVariants = {
+const containerVariants: Variants = {
     hidden: { opacity: 0 },
     show: {
         opacity: 1,
@@ -17,12 +17,12 @@ const containerVariants = {
     }
 };
 
-const itemVariants = {
+const itemVariants: Variants = {
     hidden: { opacity: 0, y: 20 },
     show: {
         opacity: 1,
         y: 0,
-        transition: { type: "spring", stiffness: 100, damping: 20 }
+        transition: { type: 'spring', stiffness: 100, damping: 20 }
     }
 };
 
@@ -34,7 +34,6 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({ onSelectMode }) => {
             initial="hidden"
             animate="show"
         >
-            {/* Minimal Decorative Element */}
             <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-emerald-500/5 dark:bg-emerald-500/10 blur-[120px] rounded-full pointer-events-none -translate-y-1/2 translate-x-1/4" />
 
             <motion.div variants={itemVariants} className="max-w-md mx-auto w-full z-10 text-center flex flex-col items-center">
@@ -44,13 +43,15 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({ onSelectMode }) => {
                 </div>
 
                 <h1 className="text-4xl md:text-5xl font-display font-semibold text-[var(--text-primary)] leading-[1.1] tracking-tighter mb-3">
-                    대신<br />
-                    골라줘
+                    오늘 뭐
+                    <br />
+                    고르지?
                 </h1>
 
                 <p className="text-[var(--text-secondary)] text-base max-w-[260px]">
-                    가장 합리적인 방법으로 <br />
-                    오늘 당신의 식사 메뉴를 결정합니다.
+                    가볍고 합리적인 방식으로
+                    <br />
+                    오늘의 식사 메뉴를 결정해요
                 </p>
             </motion.div>
 
@@ -70,7 +71,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({ onSelectMode }) => {
                         </div>
                         <div className="flex flex-col items-start text-left">
                             <span className="text-xl font-display font-semibold text-[var(--text-primary)] tracking-wide">점심 먹을래</span>
-                            <span className="text-[var(--text-secondary)] text-sm mt-0.5">오후를 든든하게 채워줄 한 끼</span>
+                            <span className="text-[var(--text-secondary)] text-sm mt-0.5">오후를 가볍게 채워줄 메뉴</span>
                         </div>
                     </div>
                 </motion.button>
@@ -90,7 +91,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({ onSelectMode }) => {
                         </div>
                         <div className="flex flex-col items-start text-left">
                             <span className="text-xl font-display font-semibold text-[var(--text-primary)] tracking-wide">저녁 먹을래</span>
-                            <span className="text-[var(--text-secondary)] text-sm mt-0.5">피로를 녹여줄 완벽한 보상</span>
+                            <span className="text-[var(--text-secondary)] text-sm mt-0.5">하루를 마무리할 만족스러운 한 끼</span>
                         </div>
                     </div>
                 </motion.button>

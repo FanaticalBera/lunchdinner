@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, type Variants } from 'framer-motion';
 import { StepHeader } from '../components/common/StepHeader';
 import { ProgressBar } from '../components/common/ProgressBar';
 import { BottomActionBar } from '../components/common/BottomActionBar';
@@ -14,34 +14,32 @@ interface Props {
 }
 
 const TABS = ['맛', '가성비', '거리', '대기'];
-const EMOJIS = ['😡', '😕', '😐', '🙂', '😍'];
+const EMOJIS = ['😡', '😕', '😐', '🙂', '🤩'];
 
-const containerVariants = {
+const containerVariants: Variants = {
     hidden: { opacity: 0 },
     show: { opacity: 1, transition: { staggerChildren: 0.1 } }
 };
 
-const itemVariants = {
+const itemVariants: Variants = {
     hidden: { opacity: 0, y: 20 },
-    show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 100, damping: 20 } }
+    show: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 100, damping: 20 } }
 };
 
 export const ScoringBoardScreen: React.FC<Props> = ({ onNext, onBack, onHome }) => {
     const [activeTab, setActiveTab] = useState(0);
 
-    // Dummy scores state for the MVP
     const [scores, setScores] = useState<Record<string, number>>({
-        'c1': 2,
-        'c2': 2
+        c1: 2,
+        c2: 2
     });
 
     const setScore = (id: string, index: number) => {
-        setScores(prev => ({ ...prev, [id]: index }));
+        setScores((prev) => ({ ...prev, [id]: index }));
     };
 
     return (
         <div className="flex-1 flex flex-col bg-[var(--bg-color)] h-[100dvh] relative overflow-hidden">
-            {/* 고정 헤더 & 탭 영역 */}
             <div className="flex-none z-20 bg-[var(--surface-color)] border-b border-[var(--border-color)]">
                 <StepHeader title="점수 평가" onBack={onBack} onHome={onHome} />
                 <ProgressBar currentStep={3} totalSteps={4} />
@@ -62,7 +60,7 @@ export const ScoringBoardScreen: React.FC<Props> = ({ onNext, onBack, onHome }) 
                                         layoutId="activeTabIndicator"
                                         className="absolute bottom-0 left-1/4 right-1/4 h-[3px] bg-emerald-500 rounded-t-full"
                                         initial={false}
-                                        transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                                        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
                                     />
                                 )}
                             </button>
@@ -71,7 +69,6 @@ export const ScoringBoardScreen: React.FC<Props> = ({ onNext, onBack, onHome }) 
                 </div>
             </div>
 
-            {/* 스크롤 가능한 본문 영역 */}
             <motion.div
                 className="p-6 flex-1 overflow-y-auto pb-36"
                 variants={containerVariants}
@@ -81,26 +78,27 @@ export const ScoringBoardScreen: React.FC<Props> = ({ onNext, onBack, onHome }) 
             >
                 <div className="mb-6 w-full max-w-sm mx-auto mt-2">
                     <motion.h2 variants={itemVariants} className="text-2xl font-display font-semibold text-[var(--text-primary)] tracking-tight leading-snug mb-2">
-                        당신의 직감을<br />믿고 골라주세요
+                        직관대로 선택하고
+                        <br />
+                        빠르게 결정해요
                     </motion.h2>
                     <motion.div variants={itemVariants}>
-                        <HelperText message={`현재 [${TABS[activeTab]}] 기준을 평가 중입니다.`} />
+                        <HelperText message={`현재 [${TABS[activeTab]}] 기준으로 평가 중입니다.`} />
                     </motion.div>
                 </div>
 
                 <div className="flex flex-col gap-4 w-full max-w-sm mx-auto">
-                    {/* Score Card 1 */}
                     <motion.div variants={itemVariants} className="bg-[var(--surface-color)] p-5 rounded-3xl shadow-[var(--shadow-sm)] border border-[var(--border-color)] flex flex-col gap-5 group hover:shadow-[var(--shadow-md)] transition-shadow">
                         <div className="flex items-center gap-3">
                             <div className="w-11 h-11 bg-slate-50 dark:bg-zinc-800 rounded-2xl flex items-center justify-center shadow-inner border border-[var(--border-color)]">
                                 <Storefront weight="duotone" size={22} className="text-[var(--text-secondary)]" />
                             </div>
-                            <h3 className="text-base font-bold text-[var(--text-primary)]">김치찌개전문점</h3>
+                            <h3 className="text-base font-bold text-[var(--text-primary)]">김치찌개 전문점</h3>
                         </div>
 
                         <div className="flex justify-between px-3 items-center bg-slate-50 dark:bg-zinc-800/50 py-3.5 rounded-2xl border border-[var(--border-color)]">
                             {EMOJIS.map((emoji, idx) => {
-                                const isSelected = scores['c1'] === idx;
+                                const isSelected = scores.c1 === idx;
                                 return (
                                     <motion.button
                                         key={idx}
@@ -111,9 +109,9 @@ export const ScoringBoardScreen: React.FC<Props> = ({ onNext, onBack, onHome }) 
                                         {emoji}
                                         {isSelected && (
                                             <motion.div
-                                                layoutId={`c1-emoji`}
+                                                layoutId="c1-emoji"
                                                 className="absolute -inset-1.5 bg-emerald-500/15 rounded-full -z-10"
-                                                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                                                transition={{ type: 'spring', stiffness: 300, damping: 20 }}
                                             />
                                         )}
                                     </motion.button>
@@ -122,7 +120,6 @@ export const ScoringBoardScreen: React.FC<Props> = ({ onNext, onBack, onHome }) 
                         </div>
                     </motion.div>
 
-                    {/* Score Card 2 */}
                     <motion.div variants={itemVariants} className="bg-[var(--surface-color)] p-5 rounded-3xl shadow-[var(--shadow-sm)] border border-[var(--border-color)] flex flex-col gap-5 group hover:shadow-[var(--shadow-md)] transition-shadow">
                         <div className="flex items-center gap-3">
                             <div className="w-11 h-11 bg-slate-50 dark:bg-zinc-800 rounded-2xl flex items-center justify-center shadow-inner border border-[var(--border-color)]">
@@ -133,7 +130,7 @@ export const ScoringBoardScreen: React.FC<Props> = ({ onNext, onBack, onHome }) 
 
                         <div className="flex justify-between px-3 items-center bg-slate-50 dark:bg-zinc-800/50 py-3.5 rounded-2xl border border-[var(--border-color)]">
                             {EMOJIS.map((emoji, idx) => {
-                                const isSelected = scores['c2'] === idx;
+                                const isSelected = scores.c2 === idx;
                                 return (
                                     <motion.button
                                         key={idx}
@@ -144,9 +141,9 @@ export const ScoringBoardScreen: React.FC<Props> = ({ onNext, onBack, onHome }) 
                                         {emoji}
                                         {isSelected && (
                                             <motion.div
-                                                layoutId={`c2-emoji`}
+                                                layoutId="c2-emoji"
                                                 className="absolute -inset-1.5 bg-emerald-500/15 rounded-full -z-10"
-                                                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                                                transition={{ type: 'spring', stiffness: 300, damping: 20 }}
                                             />
                                         )}
                                     </motion.button>
@@ -159,7 +156,7 @@ export const ScoringBoardScreen: React.FC<Props> = ({ onNext, onBack, onHome }) 
 
             <BottomActionBar>
                 <PrimaryButton onClick={onNext} className="w-full">
-                    결과 계산하기 ➔
+                    결과 계산하기
                 </PrimaryButton>
             </BottomActionBar>
         </div>

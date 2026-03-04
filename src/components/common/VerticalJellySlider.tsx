@@ -12,7 +12,7 @@ interface VerticalJellySliderProps {
 export const VerticalJellySlider: React.FC<VerticalJellySliderProps> = ({ label, icon, value, onChange, color }) => {
     const containerRef = useRef<HTMLDivElement>(null);
 
-    const handleDrag = (e: any, info: any) => {
+    const handleDrag = (_event: unknown, info: { point: { y: number } }) => {
         if (!containerRef.current) return;
         const rect = containerRef.current.getBoundingClientRect();
         // Calculate new percentage based on pointer position relative to container

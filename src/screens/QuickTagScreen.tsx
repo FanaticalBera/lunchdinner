@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, type Variants } from 'framer-motion';
 import { StepHeader } from '../components/common/StepHeader';
 import { ProgressBar } from '../components/common/ProgressBar';
 import { BottomActionBar } from '../components/common/BottomActionBar';
@@ -13,13 +13,13 @@ interface Props {
 }
 
 const DUMMY_TAGS = [
-    '국물', '면', '고기', '해산물',
-    '매콤한', '느끼한', '담백한',
+    '국밥', '면', '고기', '해산물',
+    '매운맛', '담백한', '든든한',
     '밥', '샐러드', '패스트푸드',
-    '건강한', '가볍게', '분식류'
+    '건강식', '가벼운', '분식'
 ];
 
-const containerVariants = {
+const containerVariants: Variants = {
     hidden: { opacity: 0 },
     show: {
         opacity: 1,
@@ -27,9 +27,9 @@ const containerVariants = {
     }
 };
 
-const itemVariants = {
+const itemVariants: Variants = {
     hidden: { opacity: 0, scale: 0.8, y: 10 },
-    show: { opacity: 1, scale: 1, y: 0, transition: { type: "spring", stiffness: 200, damping: 20 } }
+    show: { opacity: 1, scale: 1, y: 0, transition: { type: 'spring', stiffness: 200, damping: 20 } }
 };
 
 export const QuickTagScreen: React.FC<Props> = ({ onNext, onBack, onHome }) => {
@@ -47,39 +47,35 @@ export const QuickTagScreen: React.FC<Props> = ({ onNext, onBack, onHome }) => {
 
     return (
         <div className="flex flex-col w-full min-h-[100dvh] bg-[var(--bg-color)] relative overflow-hidden">
-
-            {/* Top Fixed Area */}
             <div className="flex-none w-full z-20 sticky top-0 bg-[var(--surface-color)]/80 backdrop-blur-xl border-b border-[var(--border-color)]">
                 <StepHeader title="빠른 추천" onBack={onBack} onHome={onHome} />
                 <ProgressBar currentStep={1} totalSteps={2} />
             </div>
 
-            {/* Scrollable Main Content */}
             <div className="flex-1 w-full max-w-sm mx-auto pt-8 pb-36 px-6">
-
-                {/* Header Question */}
                 <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ type: "spring", stiffness: 100, damping: 20 }}
+                    transition={{ type: 'spring', stiffness: 100, damping: 20 }}
                     className="mb-8 w-full mt-2"
                 >
                     <h2 className="text-2xl font-display font-semibold text-[var(--text-primary)] leading-snug tracking-tight mb-2">
-                        이번엔 끌리는<br />느낌이 있나요?
+                        이번엔 어떤
+                        <br />
+                        분위기로 갈까요?
                     </h2>
                     <p className="text-sm font-medium text-[var(--text-secondary)]">
-                        자유롭게 여러 개 선택할 수 있어요.
+                        자유롭게 여러 개를 선택해도 괜찮아요.
                     </p>
                 </motion.div>
 
-                {/* Tags Flex Container */}
                 <motion.div
                     className="flex flex-wrap gap-2.5 w-full"
                     variants={containerVariants}
                     initial="hidden"
                     animate="show"
                 >
-                    {DUMMY_TAGS.map(tag => {
+                    {DUMMY_TAGS.map((tag) => {
                         const isSelected = selectedTags.has(tag);
                         return (
                             <motion.button
@@ -100,7 +96,7 @@ export const QuickTagScreen: React.FC<Props> = ({ onNext, onBack, onHome }) => {
                                     <motion.span
                                         initial={{ scale: 0 }}
                                         animate={{ scale: 1 }}
-                                        transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                                        transition={{ type: 'spring', stiffness: 300, damping: 20 }}
                                         className="flex items-center"
                                     >
                                         <Check weight="bold" size={16} className="text-white" />
@@ -111,7 +107,6 @@ export const QuickTagScreen: React.FC<Props> = ({ onNext, onBack, onHome }) => {
                         );
                     })}
                 </motion.div>
-
             </div>
 
             <BottomActionBar>
@@ -121,11 +116,10 @@ export const QuickTagScreen: React.FC<Props> = ({ onNext, onBack, onHome }) => {
                     className="w-full flex items-center justify-center"
                 >
                     {selectedTags.size > 0
-                        ? `${selectedTags.size}가지 느낌으로 추천받기`
-                        : '끌리는 느낌을 골라주세요'}
+                        ? `${selectedTags.size}개 태그로 추천받기`
+                        : '먼저 태그를 골라주세요'}
                 </PrimaryButton>
             </BottomActionBar>
-
         </div>
     );
 };

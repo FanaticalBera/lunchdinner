@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion, type Variants } from 'framer-motion';
 import { StepHeader } from '../components/common/StepHeader';
 import { Lightning, Scales, Shuffle } from '@phosphor-icons/react';
 
@@ -9,7 +9,7 @@ interface FlowSelectScreenProps {
     onHome?: () => void;
 }
 
-const containerVariants = {
+const containerVariants: Variants = {
     hidden: { opacity: 0 },
     show: {
         opacity: 1,
@@ -20,13 +20,13 @@ const containerVariants = {
     }
 };
 
-const itemVariants = {
+const itemVariants: Variants = {
     hidden: { opacity: 0, scale: 0.95, y: 15 },
     show: {
         opacity: 1,
         scale: 1,
         y: 0,
-        transition: { type: "spring", stiffness: 100, damping: 20 }
+        transition: { type: 'spring', stiffness: 100, damping: 20 }
     }
 };
 
@@ -48,7 +48,7 @@ export const FlowSelectScreen: React.FC<FlowSelectScreenProps> = ({ onSelectFlow
                         어떻게 고를까요?
                     </h2>
                     <p className="text-[var(--text-secondary)] text-sm">
-                        지금 상황에 가장 잘 맞는 방법을 선택해 주세요.
+                        지금 상황에 맞는 방법을 선택해 주세요.
                     </p>
                 </motion.div>
 
@@ -71,12 +71,12 @@ export const FlowSelectScreen: React.FC<FlowSelectScreenProps> = ({ onSelectFlow
                                 <Lightning weight="fill" size={18} className="text-amber-600 dark:text-amber-300 group-hover:text-white transition-colors duration-300" />
                             </div>
                             <h3 className="text-[1.1rem] md:text-lg font-display font-semibold text-[var(--text-primary)] tracking-tight group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors duration-300">
-                                취향대로 추천받기
+                                취향으로 빠르게 추천
                             </h3>
                         </div>
 
                         <p className="relative z-10 text-[var(--text-secondary)] text-[0.85rem] md:text-sm leading-relaxed font-medium pl-12">
-                            느낌 태그만 골라주면 알아서 결정해 드려요.
+                            태그만 고르면 바로 메뉴를 추천해 드려요.
                         </p>
                     </motion.button>
 
@@ -103,7 +103,7 @@ export const FlowSelectScreen: React.FC<FlowSelectScreenProps> = ({ onSelectFlow
                         </div>
 
                         <p className="relative z-10 text-[var(--text-secondary)] text-[0.85rem] md:text-sm leading-relaxed font-medium pl-12">
-                            후보 2개 이상 넣고 스코어로 치열하게 승부!
+                            후보를 넣고 점수로 더 체계적으로 결정해요.
                         </p>
                     </motion.button>
 
@@ -125,12 +125,12 @@ export const FlowSelectScreen: React.FC<FlowSelectScreenProps> = ({ onSelectFlow
                                 <Shuffle weight="fill" size={18} className="text-emerald-600 dark:text-emerald-300 group-hover:text-white transition-colors duration-300" />
                             </div>
                             <h3 className="text-[1.1rem] md:text-lg font-display font-semibold text-[var(--text-primary)] tracking-tight group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors duration-300">
-                                진짜 아무거나 골라줘
+                                랜덤으로 고르기
                             </h3>
                         </div>
 
                         <p className="relative z-10 text-[var(--text-secondary)] text-[0.85rem] md:text-sm leading-relaxed font-medium pl-12">
-                            고민도 사치! 100% 랜덤 추첨.
+                            고민 끝! 완전 랜덤 추천으로 바로 결정해요.
                         </p>
                     </motion.button>
                 </div>
