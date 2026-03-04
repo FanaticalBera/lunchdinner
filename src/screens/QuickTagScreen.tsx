@@ -9,6 +9,7 @@ import { Check } from '@phosphor-icons/react';
 interface Props {
     onNext: () => void;
     onBack: () => void;
+    onHome?: () => void;
 }
 
 const DUMMY_TAGS = [
@@ -31,7 +32,7 @@ const itemVariants = {
     show: { opacity: 1, scale: 1, y: 0, transition: { type: "spring", stiffness: 200, damping: 20 } }
 };
 
-export const QuickTagScreen: React.FC<Props> = ({ onNext, onBack }) => {
+export const QuickTagScreen: React.FC<Props> = ({ onNext, onBack, onHome }) => {
     const [selectedTags, setSelectedTags] = useState<Set<string>>(new Set());
 
     const toggleTag = (tag: string) => {
@@ -49,7 +50,7 @@ export const QuickTagScreen: React.FC<Props> = ({ onNext, onBack }) => {
 
             {/* Top Fixed Area */}
             <div className="flex-none w-full z-20 sticky top-0 bg-[var(--surface-color)]/80 backdrop-blur-xl border-b border-[var(--border-color)]">
-                <StepHeader title="빠른 추천" onBack={onBack} />
+                <StepHeader title="빠른 추천" onBack={onBack} onHome={onHome} />
                 <ProgressBar currentStep={1} totalSteps={2} />
             </div>
 

@@ -10,6 +10,7 @@ import { Storefront } from '@phosphor-icons/react';
 interface Props {
     onNext: () => void;
     onBack: () => void;
+    onHome?: () => void;
 }
 
 const TABS = ['맛', '가성비', '거리', '대기'];
@@ -25,7 +26,7 @@ const itemVariants = {
     show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 100, damping: 20 } }
 };
 
-export const ScoringBoardScreen: React.FC<Props> = ({ onNext, onBack }) => {
+export const ScoringBoardScreen: React.FC<Props> = ({ onNext, onBack, onHome }) => {
     const [activeTab, setActiveTab] = useState(0);
 
     // Dummy scores state for the MVP
@@ -42,7 +43,7 @@ export const ScoringBoardScreen: React.FC<Props> = ({ onNext, onBack }) => {
         <div className="flex-1 flex flex-col bg-[var(--bg-color)] h-[100dvh] relative overflow-hidden">
             {/* 고정 헤더 & 탭 영역 */}
             <div className="flex-none z-20 bg-[var(--surface-color)] border-b border-[var(--border-color)]">
-                <StepHeader title="점수 평가" onBack={onBack} />
+                <StepHeader title="점수 평가" onBack={onBack} onHome={onHome} />
                 <ProgressBar currentStep={3} totalSteps={4} />
 
                 <div className="flex px-4 pt-1 bg-[var(--surface-color)]">

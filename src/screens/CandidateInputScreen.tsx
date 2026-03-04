@@ -10,6 +10,7 @@ import { X, Plus, Storefront } from '@phosphor-icons/react';
 interface Props {
     onNext: () => void;
     onBack: () => void;
+    onHome?: () => void;
 }
 
 const listContainerVariants = {
@@ -26,7 +27,7 @@ const itemVariants = {
     exit: { opacity: 0, scale: 0.9, y: -10, transition: { duration: 0.2 } }
 };
 
-export const CandidateInputScreen: React.FC<Props> = ({ onNext, onBack }) => {
+export const CandidateInputScreen: React.FC<Props> = ({ onNext, onBack, onHome }) => {
     const [candidates, setCandidates] = useState([
         { id: '1', name: '김치찌개전문점', icon: '🥘' },
         { id: '2', name: '옆집 돈까스', icon: '🍝' }
@@ -49,7 +50,7 @@ export const CandidateInputScreen: React.FC<Props> = ({ onNext, onBack }) => {
     return (
         <div className="flex-1 flex flex-col bg-[var(--bg-color)] h-[100dvh] relative overflow-hidden">
             <div className="flex-none bg-[var(--surface-color)] z-10 border-b border-[var(--border-color)]">
-                <StepHeader title="후보 입력" onBack={onBack} />
+                <StepHeader title="후보 입력" onBack={onBack} onHome={onHome} />
                 <ProgressBar currentStep={2} totalSteps={4} />
             </div>
 

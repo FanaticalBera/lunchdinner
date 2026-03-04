@@ -29,6 +29,7 @@ export const ResultScreen: React.FC<Props> = ({ onRestart, onReWeight }) => {
             {/* Background Glow */}
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-emerald-500/10 dark:bg-indigo-500/10 blur-[100px] rounded-full pointer-events-none -translate-y-1/2" />
 
+
             <motion.div
                 className="flex-1 flex flex-col pt-12 pb-6 px-6 justify-center max-w-sm mx-auto w-full z-10"
                 variants={containerVariants}

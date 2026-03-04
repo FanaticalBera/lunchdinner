@@ -55,6 +55,10 @@ function App() {
                 return <QuickResultScreen
                     flowType={flowType === 'random' ? 'random' : 'quick'}
                     onRestart={() => setCurrentStep('quick1')}
+                    onRefetch={() => {
+                        // TODO: Implement actual refetching logic later
+                        console.log('Refetching with same tags...');
+                    }}
                     onSelectFlow={() => {
                         if (flowType === 'random') {
                             setFlowType('quick');
@@ -64,6 +68,7 @@ function App() {
                             setCurrentStep('compare1');
                         }
                     }}
+                    onHome={handleRestart}
                 />;
 
             // Route B: Manual Comparison

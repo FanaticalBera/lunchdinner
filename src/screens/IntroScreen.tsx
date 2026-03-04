@@ -45,7 +45,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({ onSelectMode }) => {
 
                 <h1 className="text-4xl md:text-5xl font-display font-semibold text-[var(--text-primary)] leading-[1.1] tracking-tighter mb-3">
                     대신<br />
-                    골라줘.
+                    골라줘
                 </h1>
 
                 <p className="text-[var(--text-secondary)] text-base max-w-[260px]">

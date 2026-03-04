@@ -6,6 +6,7 @@ import { Lightning, Scales, Shuffle } from '@phosphor-icons/react';
 interface FlowSelectScreenProps {
     onSelectFlow: (flow: 'quick' | 'compare' | 'random') => void;
     onBack: () => void;
+    onHome?: () => void;
 }
 
 const containerVariants = {
@@ -29,11 +30,11 @@ const itemVariants = {
     }
 };
 
-export const FlowSelectScreen: React.FC<FlowSelectScreenProps> = ({ onSelectFlow, onBack }) => {
+export const FlowSelectScreen: React.FC<FlowSelectScreenProps> = ({ onSelectFlow, onBack, onHome }) => {
     return (
         <div className="flex flex-col w-full min-h-[100dvh] bg-[var(--bg-color)]">
             <div className="flex-none sticky top-0 z-20 liquid-glass border-b-0">
-                <StepHeader title="결정 방식 선택" onBack={onBack} />
+                <StepHeader title="결정 방식 선택" onBack={onBack} onHome={onHome} />
             </div>
 
             <motion.div

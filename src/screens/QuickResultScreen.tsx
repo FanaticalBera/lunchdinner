@@ -4,24 +4,25 @@ import { ProgressBar } from '../components/common/ProgressBar';
 import { BottomActionBar } from '../components/common/BottomActionBar';
 import { PrimaryButton } from '../components/common/PrimaryButton';
 import { HelperText } from '../components/common/HelperText';
-import { DiceThree, BowlFood, ArrowsLeftRight, Lightning } from '@phosphor-icons/react';
+import { DiceThree, BowlFood, ArrowsLeftRight, Lightning, House } from '@phosphor-icons/react';
 
 interface Props {
-    onRestart: () => void;
-    onSelectFlow: () => void;
+    onRestart: () => void; // go back to start
+    onRefetch: () => void; // refetch with same tags
+    onSelectFlow: () => void; // go to compare
     flowType?: 'quick' | 'random';
+    onHome?: () => void;
 }
 
-export const QuickResultScreen: React.FC<Props> = ({ onRestart, onSelectFlow, flowType = 'quick' }) => {
+export const QuickResultScreen: React.FC<Props> = ({ onRestart, onRefetch, onSelectFlow, flowType = 'quick', onHome }) => {
     const [loading, setLoading] = useState(true);
     const [retryCount, setRetryCount] = useState(0);
 
     const handleRestartClick = () => {
-        if (flowType === 'random') {
-            setLoading(true);
-            setRetryCount(c => c + 1);
-        } else {
-            onRestart();
+        setLoading(true);
+        setRetryCount(c => c + 1);
+        if (flowType === 'quick') {
+            onRefetch(); // Trigger any logic to pick a new restaurant with the same tags
         }
     };
 
@@ -36,10 +37,15 @@ export const QuickResultScreen: React.FC<Props> = ({ onRestart, onSelectFlow, fl
 
     return (
         <div className="flex-1 flex flex-col bg-[var(--bg-color)] h-[100dvh] relative overflow-hidden">
-            <div className="flex-none bg-[var(--surface-color)] z-20 border-b border-[var(--border-color)]">
+            <div className="flex-none bg-[var(--surface-color)] z-20 border-b border-[var(--border-color)] relative">
                 <div className="h-14 flex items-center justify-center font-display font-semibold text-base text-[var(--text-primary)] tracking-wide">
                     {loading ? '메뉴 스캔 중' : '추천 결과'}
                 </div>
+                {!loading && onHome && (
+                    <button className="absolute top-2 right-4 w-10 h-10 flex items-center justify-center text-[var(--text-primary)] outline-none hover:text-emerald-500 transition-colors" onClick={onHome} aria-label="처음으로">
+                        <House weight="bold" size={24} />
+                    </button>
+                )}
                 <ProgressBar currentStep={2} totalSteps={2} />
             </div>
 
@@ -122,24 +128,37 @@ export const QuickResultScreen: React.FC<Props> = ({ onRestart, onSelectFlow, fl
                                     onClick={handleRestartClick}
                                     className="w-full"
                                 >
-                                    {flowType === 'random' ? '다시 주사위 굴리기!' : '맘에 안 들어, 다시 추천해!'}
+                                    {flowType === 'random' ? '다시 주사위 굴리기!' : '이 느낌 그대로 다시 추천!'}
                                 </PrimaryButton>
-                                <button
-                                    onClick={onSelectFlow}
-                                    className="flex items-center gap-1.5 text-sm text-[var(--text-helper)] hover:text-[var(--text-secondary)] transition-colors py-1"
-                                >
-                                    {flowType === 'random' ? (
-                                        <>
-                                            <Lightning weight="bold" size={14} />
-                                            <span>이럴 바엔 내 취향대로 추천받을래</span>
-                                        </>
-                                    ) : (
-                                        <>
+
+                                <div className="flex gap-4">
+                                    {flowType === 'quick' && (
+                                        <button
+                                            onClick={onRestart}
+                                            className="flex items-center gap-1.5 text-sm text-[var(--text-helper)] hover:text-[var(--text-secondary)] transition-colors py-1"
+                                        >
                                             <ArrowsLeftRight weight="bold" size={14} />
-                                            <span>이럴 바엔 내가 직접 비교할래</span>
-                                        </>
+                                            <span>조건 다시 고르기</span>
+                                        </button>
                                     )}
-                                </button>
+
+                                    <button
+                                        onClick={onSelectFlow}
+                                        className="flex items-center gap-1.5 text-sm text-[var(--text-helper)] hover:text-[var(--text-secondary)] transition-colors py-1"
+                                    >
+                                        {flowType === 'random' ? (
+                                            <>
+                                                <Lightning weight="bold" size={14} />
+                                                <span>이럴 바엔 내 취향대로 추천받을래</span>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <ArrowsLeftRight weight="bold" size={14} />
+                                                <span>이럴 바엔 내가 직접 비교할래</span>
+                                            </>
+                                        )}
+                                    </button>
+                                </div>
                             </div>
                         </BottomActionBar>
                     </motion.div>

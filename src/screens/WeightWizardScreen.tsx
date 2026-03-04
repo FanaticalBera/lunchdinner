@@ -10,6 +10,7 @@ import { VerticalJellySlider } from '../components/common/VerticalJellySlider';
 interface Props {
     onNext: () => void;
     onBack: () => void;
+    onHome?: () => void;
 }
 
 const INITIAL_WEIGHTS = {
@@ -31,7 +32,7 @@ const itemVariants = {
     show: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 100, damping: 20 } }
 };
 
-export const WeightWizardScreen: React.FC<Props> = ({ onNext, onBack }) => {
+export const WeightWizardScreen: React.FC<Props> = ({ onNext, onBack, onHome }) => {
     const [weights, setWeights] = useState(INITIAL_WEIGHTS);
 
     const handleWeightChange = (key: keyof typeof INITIAL_WEIGHTS, newValue: number) => {
@@ -72,7 +73,7 @@ export const WeightWizardScreen: React.FC<Props> = ({ onNext, onBack }) => {
     return (
         <div className="flex-1 flex flex-col bg-[var(--bg-color)] h-[100dvh] relative overflow-hidden">
             <div className="flex-none bg-[var(--surface-color)] z-10 border-b border-[var(--border-color)]">
-                <StepHeader title="가중치 설정" onBack={onBack} />
+                <StepHeader title="가중치 설정" onBack={onBack} onHome={onHome} />
                 <ProgressBar currentStep={1} totalSteps={4} />
             </div>
 
