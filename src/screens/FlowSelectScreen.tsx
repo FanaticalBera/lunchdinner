@@ -103,7 +103,7 @@ export const FlowSelectScreen: React.FC<FlowSelectScreenProps> = ({ onSelectFlow
                         </div>
 
                         <p className="relative z-10 text-[var(--text-secondary)] text-[0.85rem] md:text-sm leading-relaxed font-medium pl-12">
-                            후보 2개 넣고 스코어로 치열하게 승부!
+                            후보 2개 이상 넣고 스코어로 치열하게 승부!
                         </p>
                     </motion.button>
 
