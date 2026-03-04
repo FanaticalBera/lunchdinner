@@ -4,22 +4,35 @@ import { ProgressBar } from '../components/common/ProgressBar';
 import { BottomActionBar } from '../components/common/BottomActionBar';
 import { PrimaryButton } from '../components/common/PrimaryButton';
 import { HelperText } from '../components/common/HelperText';
-import { DiceThree, BowlFood, ArrowsLeftRight } from '@phosphor-icons/react';
+import { DiceThree, BowlFood, ArrowsLeftRight, Lightning } from '@phosphor-icons/react';
 
 interface Props {
     onRestart: () => void;
     onSelectFlow: () => void;
+    flowType?: 'quick' | 'random';
 }
 
-export const QuickResultScreen: React.FC<Props> = ({ onRestart, onSelectFlow }) => {
+export const QuickResultScreen: React.FC<Props> = ({ onRestart, onSelectFlow, flowType = 'quick' }) => {
     const [loading, setLoading] = useState(true);
+    const [retryCount, setRetryCount] = useState(0);
+
+    const handleRestartClick = () => {
+        if (flowType === 'random') {
+            setLoading(true);
+            setRetryCount(c => c + 1);
+        } else {
+            onRestart();
+        }
+    };
 
     useEffect(() => {
-        const timer = setTimeout(() => {
-            setLoading(false);
-        }, 1800);
-        return () => clearTimeout(timer);
-    }, []);
+        if (loading) {
+            const timer = setTimeout(() => {
+                setLoading(false);
+            }, 1800);
+            return () => clearTimeout(timer);
+        }
+    }, [loading]);
 
     return (
         <div className="flex-1 flex flex-col bg-[var(--bg-color)] h-[100dvh] relative overflow-hidden">
@@ -50,9 +63,11 @@ export const QuickResultScreen: React.FC<Props> = ({ onRestart, onSelectFlow }) 
                                 </div>
                             </motion.div>
                             <h2 className="text-xl font-display font-semibold text-[var(--text-primary)] tracking-tight mb-2">
-                                찰떡 메뉴 찾는 중...
+                                {flowType === 'random' && retryCount > 0
+                                    ? '다시 주사위를 굴리며 찾는 중...'
+                                    : '찰떡 메뉴 찾는 중...'}
                             </h2>
-                            <HelperText message="당신의 입맛을 고속 분석하고 있어요." />
+                            <HelperText message={flowType === 'random' && retryCount > 0 ? "이번엔 뭐가 나올까요?" : "당신의 입맛을 고속 분석하고 있어요."} />
                         </motion.div>
                     ) : (
                         <motion.div
@@ -104,17 +119,26 @@ export const QuickResultScreen: React.FC<Props> = ({ onRestart, onSelectFlow }) 
                         <BottomActionBar>
                             <div className="flex flex-col items-center gap-3 w-full">
                                 <PrimaryButton
-                                    onClick={onRestart}
+                                    onClick={handleRestartClick}
                                     className="w-full"
                                 >
-                                    맘에 안 들어, 다시 추천해!
+                                    {flowType === 'random' ? '다시 주사위 굴리기!' : '맘에 안 들어, 다시 추천해!'}
                                 </PrimaryButton>
                                 <button
                                     onClick={onSelectFlow}
                                     className="flex items-center gap-1.5 text-sm text-[var(--text-helper)] hover:text-[var(--text-secondary)] transition-colors py-1"
                                 >
-                                    <ArrowsLeftRight weight="bold" size={14} />
-                                    <span>이럴 바엔 내가 직접 비교할래</span>
+                                    {flowType === 'random' ? (
+                                        <>
+                                            <Lightning weight="bold" size={14} />
+                                            <span>이럴 바엔 내 취향대로 추천받을래</span>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <ArrowsLeftRight weight="bold" size={14} />
+                                            <span>이럴 바엔 내가 직접 비교할래</span>
+                                        </>
+                                    )}
                                 </button>
                             </div>
                         </BottomActionBar>

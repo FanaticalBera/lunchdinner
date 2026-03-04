@@ -1,10 +1,10 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { StepHeader } from '../components/common/StepHeader';
-import { Lightning, Scales } from '@phosphor-icons/react';
+import { Lightning, Scales, Shuffle } from '@phosphor-icons/react';
 
 interface FlowSelectScreenProps {
-    onSelectFlow: (flow: 'quick' | 'compare') => void;
+    onSelectFlow: (flow: 'quick' | 'compare' | 'random') => void;
     onBack: () => void;
 }
 
@@ -54,42 +54,83 @@ export const FlowSelectScreen: React.FC<FlowSelectScreenProps> = ({ onSelectFlow
                 <div className="flex flex-col gap-4 w-full">
                     <motion.button
                         variants={itemVariants}
-                        whileHover={{ scale: 1.01, y: -2 }}
+                        whileHover={{ scale: 1.02, y: -2 }}
                         whileTap={{ scale: 0.98 }}
                         onClick={() => onSelectFlow('quick')}
-                        className="w-full bg-[var(--surface-color)] rounded-3xl p-7 flex flex-col items-start border border-[var(--border-color)] shadow-[var(--shadow-md)] hover:shadow-[var(--shadow-lg)] hover:border-amber-400/50 transition-all duration-300 text-left relative overflow-hidden group"
+                        className="relative overflow-hidden w-full bg-[var(--surface-color)] rounded-3xl p-5 md:p-6 flex flex-col gap-2 border border-[var(--border-color)] shadow-[var(--shadow-sm)] hover:shadow-[var(--shadow-md)] hover:border-amber-300/50 dark:hover:border-amber-500/30 transition-all duration-300 text-left group"
                     >
-                        <div className="relative z-10 flex flex-col items-start w-full">
-                            <div className="w-14 h-14 bg-amber-50 dark:bg-amber-500/10 rounded-2xl flex items-center justify-center mb-5 ring-[1px] ring-[var(--border-color)] group-hover:bg-amber-500 group-hover:text-white group-hover:shadow-[0_8px_16px_rgba(245,158,11,0.3)] transition-all duration-300">
-                                <Lightning weight="fill" size={28} className="text-amber-500 group-hover:text-white transition-colors duration-300" />
-                            </div>
-                            <h3 className="text-xl font-display font-semibold text-[var(--text-primary)] mb-2 tracking-wide">
-                                빠르게 추천받기
-                            </h3>
-                            <p className="text-[var(--text-secondary)] text-sm leading-relaxed">
-                                끌리는 느낌표 태그 몇 개만 고르세요.<br />복잡한 고민 없이 알아서 결정해 드립니다.
-                            </p>
+                        <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+                        <div className="absolute -top-4 -right-2 opacity-[0.03] dark:opacity-[0.05] group-hover:opacity-10 dark:group-hover:opacity-10 transition-all duration-500 group-hover:rotate-12 group-hover:scale-110 pointer-events-none">
+                            <Lightning weight="fill" size={100} className="text-amber-500" />
                         </div>
+
+                        <div className="relative z-10 flex items-center gap-3">
+                            <div className="flex items-center justify-center w-9 h-9 rounded-full bg-amber-100 dark:bg-amber-500/20 group-hover:bg-amber-500 transition-colors duration-300 shadow-sm">
+                                <Lightning weight="fill" size={18} className="text-amber-600 dark:text-amber-300 group-hover:text-white transition-colors duration-300" />
+                            </div>
+                            <h3 className="text-[1.1rem] md:text-lg font-display font-semibold text-[var(--text-primary)] tracking-tight group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors duration-300">
+                                취향대로 추천받기
+                            </h3>
+                        </div>
+
+                        <p className="relative z-10 text-[var(--text-secondary)] text-[0.85rem] md:text-sm leading-relaxed font-medium pl-12">
+                            느낌 태그만 골라주면 알아서 결정해 드려요.
+                        </p>
                     </motion.button>
 
                     <motion.button
                         variants={itemVariants}
-                        whileHover={{ scale: 1.01, y: -2 }}
+                        whileHover={{ scale: 1.02, y: -2 }}
                         whileTap={{ scale: 0.98 }}
                         onClick={() => onSelectFlow('compare')}
-                        className="w-full bg-[var(--surface-color)] rounded-3xl p-7 flex flex-col items-start border border-[var(--border-color)] shadow-[var(--shadow-md)] hover:shadow-[var(--shadow-lg)] hover:border-blue-400/50 transition-all duration-300 text-left relative overflow-hidden group"
+                        className="relative overflow-hidden w-full bg-[var(--surface-color)] rounded-3xl p-5 md:p-6 flex flex-col gap-2 border border-[var(--border-color)] shadow-[var(--shadow-sm)] hover:shadow-[var(--shadow-md)] hover:border-blue-300/50 dark:hover:border-blue-500/30 transition-all duration-300 text-left group"
                     >
-                        <div className="relative z-10 flex flex-col items-start w-full">
-                            <div className="w-14 h-14 bg-blue-50 dark:bg-blue-500/10 rounded-2xl flex items-center justify-center mb-5 ring-[1px] ring-[var(--border-color)] group-hover:bg-blue-500 group-hover:text-white group-hover:shadow-[0_8px_16px_rgba(59,130,246,0.3)] transition-all duration-300">
-                                <Scales weight="fill" size={28} className="text-blue-500 group-hover:text-white transition-colors duration-300" />
+                        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+                        <div className="absolute -top-4 -right-2 opacity-[0.03] dark:opacity-[0.05] group-hover:opacity-10 dark:group-hover:opacity-10 transition-all duration-500 group-hover:-rotate-12 group-hover:scale-110 pointer-events-none">
+                            <Scales weight="fill" size={100} className="text-blue-500" />
+                        </div>
+
+                        <div className="relative z-10 flex items-center gap-3">
+                            <div className="flex items-center justify-center w-9 h-9 rounded-full bg-blue-100 dark:bg-blue-500/20 group-hover:bg-blue-500 transition-colors duration-300 shadow-sm">
+                                <Scales weight="fill" size={18} className="text-blue-600 dark:text-blue-300 group-hover:text-white transition-colors duration-300" />
                             </div>
-                            <h3 className="text-xl font-display font-semibold text-[var(--text-primary)] mb-2 tracking-wide">
+                            <h3 className="text-[1.1rem] md:text-lg font-display font-semibold text-[var(--text-primary)] tracking-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300">
                                 직접 비교하기
                             </h3>
-                            <p className="text-[var(--text-secondary)] text-sm leading-relaxed">
-                                마음속에 후보가 2개 이상 있나요?<br />맛, 가격 등의 스코어로 치열하게 승부합니다.
-                            </p>
                         </div>
+
+                        <p className="relative z-10 text-[var(--text-secondary)] text-[0.85rem] md:text-sm leading-relaxed font-medium pl-12">
+                            후보 2개 넣고 스코어로 치열하게 승부!
+                        </p>
+                    </motion.button>
+
+                    <motion.button
+                        variants={itemVariants}
+                        whileHover={{ scale: 1.02, y: -2 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={() => onSelectFlow('random')}
+                        className="relative overflow-hidden w-full bg-[var(--surface-color)] rounded-3xl p-5 md:p-6 flex flex-col gap-2 border border-[var(--border-color)] shadow-[var(--shadow-sm)] hover:shadow-[var(--shadow-md)] hover:border-emerald-300/50 dark:hover:border-emerald-500/30 transition-all duration-300 text-left group"
+                    >
+                        <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+                        <div className="absolute -top-4 -right-2 opacity-[0.03] dark:opacity-[0.05] group-hover:opacity-10 dark:group-hover:opacity-10 transition-all duration-500 group-hover:rotate-12 group-hover:scale-110 pointer-events-none">
+                            <Shuffle weight="fill" size={100} className="text-emerald-500" />
+                        </div>
+
+                        <div className="relative z-10 flex items-center gap-3">
+                            <div className="flex items-center justify-center w-9 h-9 rounded-full bg-emerald-100 dark:bg-emerald-500/20 group-hover:bg-emerald-500 transition-colors duration-300 shadow-sm">
+                                <Shuffle weight="fill" size={18} className="text-emerald-600 dark:text-emerald-300 group-hover:text-white transition-colors duration-300" />
+                            </div>
+                            <h3 className="text-[1.1rem] md:text-lg font-display font-semibold text-[var(--text-primary)] tracking-tight group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors duration-300">
+                                진짜 아무거나 골라줘
+                            </h3>
+                        </div>
+
+                        <p className="relative z-10 text-[var(--text-secondary)] text-[0.85rem] md:text-sm leading-relaxed font-medium pl-12">
+                            고민도 사치! 100% 랜덤 추첨.
+                        </p>
                     </motion.button>
                 </div>
             </motion.div>

@@ -14,15 +14,19 @@ export type AppMode = 'lunch' | 'dinner' | null;
 function App() {
     const [currentStep, setCurrentStep] = useState<string>('intro');
     const [mode, setMode] = useState<AppMode>(null);
+    const [flowType, setFlowType] = useState<'quick' | 'compare' | 'random'>('quick');
 
     const handleModeSelect = (selectedMode: 'lunch' | 'dinner') => {
         setMode(selectedMode);
         setCurrentStep('flowSelect');
     };
 
-    const handleFlowSelect = (flow: 'quick' | 'compare') => {
+    const handleFlowSelect = (flow: 'quick' | 'compare' | 'random') => {
+        setFlowType(flow);
         if (flow === 'quick') {
             setCurrentStep('quick1');
+        } else if (flow === 'random') {
+            setCurrentStep('quick2');
         } else {
             setCurrentStep('compare1');
         }
@@ -37,14 +41,10 @@ function App() {
         setCurrentStep('compare1');
     };
 
-    const handleRandomPick = () => {
-        setCurrentStep('quick1');
-    };
-
     const renderScreen = () => {
         switch (currentStep) {
             case 'intro':
-                return <IntroScreen onSelectMode={handleModeSelect} onRandomPick={handleRandomPick} />;
+                return <IntroScreen onSelectMode={handleModeSelect} />;
             case 'flowSelect':
                 return <FlowSelectScreen onSelectFlow={handleFlowSelect} onBack={() => setCurrentStep('intro')} />;
 
@@ -52,7 +52,19 @@ function App() {
             case 'quick1':
                 return <QuickTagScreen onNext={() => setCurrentStep('quick2')} onBack={() => setCurrentStep('flowSelect')} />;
             case 'quick2':
-                return <QuickResultScreen onRestart={() => setCurrentStep('quick1')} onSelectFlow={() => setCurrentStep('compare1')} />;
+                return <QuickResultScreen
+                    flowType={flowType === 'random' ? 'random' : 'quick'}
+                    onRestart={() => setCurrentStep('quick1')}
+                    onSelectFlow={() => {
+                        if (flowType === 'random') {
+                            setFlowType('quick');
+                            setCurrentStep('quick1');
+                        } else {
+                            setFlowType('compare');
+                            setCurrentStep('compare1');
+                        }
+                    }}
+                />;
 
             // Route B: Manual Comparison
             case 'compare1':
@@ -65,7 +77,7 @@ function App() {
                 return <ResultScreen onRestart={handleRestart} onReWeight={handleReWeight} />;
 
             default:
-                return <IntroScreen onSelectMode={handleModeSelect} onRandomPick={handleRandomPick} />;
+                return <IntroScreen onSelectMode={handleModeSelect} />;
         }
     };
 
