@@ -1,0 +1,44 @@
+.step-header {
+    position: sticky;
+    top: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 56px;
+    padding: 0 16px;
+    background-color: var(--bg-color);
+    z-index: 10;
+}
+
+.step-header-left,
+.step-header-right {
+    width: 40px;
+    /* 양쪽 균형을 위해 고정 영역 차지 */
+    display: flex;
+    align-items: center;
+}
+
+.back-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    color: var(--text-primary);
+    border-radius: 50%;
+    margin-left: -8px;
+    /* 시각적 정렬 보정 */
+}
+
+.back-btn:active {
+    background-color: var(--border-color);
+}
+
+.step-header-title {
+    flex: 1;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 700;
+    margin: 0;
+    color: var(--text-primary);
+}

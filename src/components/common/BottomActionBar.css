@@ -1,0 +1,26 @@
+.bottom-action-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    padding: var(--space-4);
+    padding-bottom: calc(var(--space-4) + env(safe-area-inset-bottom));
+    /* 아이폰 하단 홈바 대응 */
+    background: linear-gradient(to top, var(--bg-color) 70%, transparent);
+    pointer-events: none;
+    /* 배경 그라데이션이 스크롤을 방해하지 않게 */
+    z-index: 20;
+}
+
+.bottom-action-inner {
+    width: 100%;
+    max-width: 480px;
+    /* AppShell max-width와 동일하게 유지 */
+    pointer-events: auto;
+    /* 버튼 클릭은 가능하게 */
+    display: flex;
+    gap: var(--space-3);
+    padding: 0 var(--space-4);
+}
