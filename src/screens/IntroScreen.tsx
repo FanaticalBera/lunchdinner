@@ -80,17 +80,17 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({ onSelectMode }) => {
                     whileHover={{ scale: 1.02, y: -2 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => onSelectMode('dinner')}
-                    className="w-full bg-slate-900 rounded-3xl p-6 flex flex-col items-start justify-center shadow-[var(--shadow-md)] hover:shadow-[var(--shadow-lg)] border border-slate-800 hover:border-blue-500/50 transition-all duration-300 group relative overflow-hidden"
+                    className="w-full bg-[var(--surface-color)] rounded-3xl p-6 flex flex-col items-start justify-center shadow-[var(--shadow-md)] hover:shadow-[var(--shadow-lg)] border border-[var(--border-color)] hover:border-indigo-400/50 transition-all duration-300 group relative overflow-hidden"
                 >
-                    <div className="absolute inset-0 bg-gradient-to-r from-blue-500/0 via-blue-500/5 to-blue-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/0 via-indigo-500/5 to-indigo-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
 
                     <div className="flex items-center gap-4 relative z-10">
-                        <div className="w-14 h-14 rounded-2xl bg-slate-800 text-blue-400 flex items-center justify-center shadow-inner group-hover:bg-blue-500 group-hover:text-white group-hover:shadow-[0_8px_16px_rgba(59,130,246,0.3)] transition-all duration-300">
+                        <div className="w-14 h-14 rounded-2xl bg-indigo-50 dark:bg-indigo-500/10 text-indigo-500 flex items-center justify-center shadow-inner group-hover:bg-indigo-500 group-hover:text-white group-hover:shadow-[0_8px_16px_rgba(99,102,241,0.3)] transition-all duration-300">
                             <Moon weight="fill" size={26} />
                         </div>
                         <div className="flex flex-col items-start text-left">
-                            <span className="text-xl font-display font-semibold text-white tracking-wide">저녁 먹을래</span>
-                            <span className="text-slate-400 text-sm mt-0.5">피로를 녹여줄 완벽한 보상</span>
+                            <span className="text-xl font-display font-semibold text-[var(--text-primary)] tracking-wide">저녁 먹을래</span>
+                            <span className="text-[var(--text-secondary)] text-sm mt-0.5">피로를 녹여줄 완벽한 보상</span>
                         </div>
                     </div>
                 </motion.button>

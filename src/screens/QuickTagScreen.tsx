@@ -91,7 +91,7 @@ export const QuickTagScreen: React.FC<Props> = ({ onNext, onBack }) => {
                                     relative flex items-center justify-center gap-1.5 py-3 px-5 rounded-full text-[15px] font-semibold transition-all duration-200 overflow-hidden outline-none
                                     ${isSelected
                                         ? 'bg-emerald-500 text-white shadow-[0_4px_12px_-2px_rgba(16,185,129,0.4)] border-2 border-emerald-400'
-                                        : 'bg-white text-[var(--text-primary)] border-2 border-slate-200 hover:border-emerald-400 shadow-[0_2px_10px_-2px_rgba(0,0,0,0.08)] dark:bg-zinc-800 dark:border-zinc-600'
+                                        : 'bg-[var(--surface-color)] text-[var(--text-primary)] border-2 border-[var(--border-color)] hover:border-emerald-400 shadow-[0_2px_10px_-2px_rgba(0,0,0,0.08)]'
                                     }
                                 `}
                             >
