@@ -1,12 +1,13 @@
-import React, { useEffect } from 'react';
+﻿import React, { useEffect } from 'react';
+import type { Mode } from '../../domain/types';
 
 interface AppShellProps {
     children: React.ReactNode;
-    theme?: 'lunch' | 'dinner' | null;
+    theme?: Mode | null;
 }
 
 export const AppShell: React.FC<AppShellProps> = ({ children, theme }) => {
-    // 테마 변경 로직 처리
+    // ?뚮쭏 蹂寃?濡쒖쭅 泥섎━
     useEffect(() => {
         if (theme === 'dinner') {
             document.documentElement.setAttribute('data-theme', 'dark');
@@ -21,3 +22,4 @@ export const AppShell: React.FC<AppShellProps> = ({ children, theme }) => {
         </div>
     );
 };
+

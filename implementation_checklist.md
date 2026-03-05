@@ -20,12 +20,12 @@
 - [x] `npm run typecheck`가 에러 없이 통과한다.
 
 ### 2) 도메인 타입 먼저 정의
-- [ ] 공통 타입 파일 추가 (예: `src/domain/types.ts`)
-- [ ] 핵심 타입 정의: `Mode`, `FlowType`, `Step`, `Weights`, `Candidate`, `ScoreMatrix`, `QuickTag`, `Result`
-- [ ] 화면 컴포넌트에서 타입 재사용하도록 정리
+- [x] 공통 타입 파일 추가 (예: `src/domain/types.ts`)
+- [x] 핵심 타입 정의: `Mode`, `FlowType`, `Step`, `Weights`, `Candidate`, `ScoreMatrix`, `QuickTag`, `Result`
+- [x] 화면 컴포넌트에서 타입 재사용하도록 정리
 
 완료 기준
-- [ ] 화면별 임시 타입/중복 타입이 최소화된다.
+- [x] 화면별 임시 타입/중복 타입이 최소화된다.
 
 ### 3) useReducer 도입 (currentStep 포함)
 - [ ] 앱 상태를 reducer로 통합 (`currentStep`, `mode`, `flowType` 포함)
@@ -100,3 +100,4 @@
 - 검증 결과:
 - 남은 이슈:
 ```
+

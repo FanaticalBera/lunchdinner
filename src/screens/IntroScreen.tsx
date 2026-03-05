@@ -1,9 +1,10 @@
-import React from 'react';
+﻿import React from 'react';
 import { motion, type Variants } from 'framer-motion';
 import { Sun, Moon, Sparkle } from '@phosphor-icons/react';
+import type { Mode } from '../domain/types';
 
 interface IntroScreenProps {
-    onSelectMode: (mode: 'lunch' | 'dinner') => void;
+    onSelectMode: (mode: Mode) => void;
 }
 
 const containerVariants: Variants = {

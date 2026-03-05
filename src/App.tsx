@@ -1,4 +1,4 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import { AppShell } from './components/common/AppShell'
 import { IntroScreen } from './screens/IntroScreen'
 import { FlowSelectScreen } from './screens/FlowSelectScreen'
@@ -8,20 +8,19 @@ import { WeightWizardScreen } from './screens/WeightWizardScreen'
 import { CandidateInputScreen } from './screens/CandidateInputScreen'
 import { ScoringBoardScreen } from './screens/ScoringBoardScreen'
 import { ResultScreen } from './screens/ResultScreen'
-
-export type AppMode = 'lunch' | 'dinner' | null;
+import type { FlowType, Mode, Step } from './domain/types'
 
 function App() {
-    const [currentStep, setCurrentStep] = useState<string>('intro');
-    const [mode, setMode] = useState<AppMode>(null);
-    const [flowType, setFlowType] = useState<'quick' | 'compare' | 'random'>('quick');
+    const [currentStep, setCurrentStep] = useState<Step>('intro');
+    const [mode, setMode] = useState<Mode | null>(null);
+    const [flowType, setFlowType] = useState<FlowType>('quick');
 
-    const handleModeSelect = (selectedMode: 'lunch' | 'dinner') => {
+    const handleModeSelect = (selectedMode: Mode) => {
         setMode(selectedMode);
         setCurrentStep('flowSelect');
     };
 
-    const handleFlowSelect = (flow: 'quick' | 'compare' | 'random') => {
+    const handleFlowSelect = (flow: FlowType) => {
         setFlowType(flow);
         if (flow === 'quick') {
             setCurrentStep('quick1');
@@ -94,3 +93,4 @@ function App() {
 }
 
 export default App
+

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { motion, AnimatePresence, type Variants } from 'framer-motion';
 import { StepHeader } from '../components/common/StepHeader';
 import { ProgressBar } from '../components/common/ProgressBar';
@@ -6,6 +6,7 @@ import { BottomActionBar } from '../components/common/BottomActionBar';
 import { PrimaryButton } from '../components/common/PrimaryButton';
 import { HelperText } from '../components/common/HelperText';
 import { X, Plus, Storefront } from '@phosphor-icons/react';
+import type { Candidate } from '../domain/types';
 
 interface Props {
     onNext: () => void;
@@ -28,7 +29,7 @@ const itemVariants: Variants = {
 };
 
 export const CandidateInputScreen: React.FC<Props> = ({ onNext, onBack, onHome }) => {
-    const [candidates, setCandidates] = useState([
+    const [candidates, setCandidates] = useState<Candidate[]>([
         { id: '1', name: '김치찌개 전문점', icon: '🍲' },
         { id: '2', name: '옆집 돈까스', icon: '🍱' }
     ]);

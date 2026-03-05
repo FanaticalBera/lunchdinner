@@ -1,16 +1,17 @@
-import React, { useEffect, useState } from 'react';
+﻿import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ProgressBar } from '../components/common/ProgressBar';
 import { BottomActionBar } from '../components/common/BottomActionBar';
 import { PrimaryButton } from '../components/common/PrimaryButton';
 import { HelperText } from '../components/common/HelperText';
 import { DiceThree, BowlFood, ArrowsLeftRight, Lightning, House } from '@phosphor-icons/react';
+import type { QuickFlowType } from '../domain/types';
 
 interface Props {
     onRestart: () => void;
     onRefetch: () => void;
     onSelectFlow: () => void;
-    flowType?: 'quick' | 'random';
+    flowType?: QuickFlowType;
     onHome?: () => void;
 }
 
