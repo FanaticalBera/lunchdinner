@@ -2,6 +2,7 @@
 import { motion, type Variants } from 'framer-motion';
 import { BottomActionBar } from '../components/common/BottomActionBar';
 import { PrimaryButton } from '../components/common/PrimaryButton';
+import { WinnerCard } from '../components/common/WinnerCard';
 import { MapTrifold, ArrowsClockwise, Crown } from '@phosphor-icons/react';
 import type { Candidate, Result } from '../domain/types';
 
@@ -58,24 +59,25 @@ export const ResultScreen: React.FC<Props> = ({ result, candidates, onRestart, o
                     </h2>
                 </motion.div>
 
-                <motion.div
-                    variants={itemVariants}
-                    className="relative bg-[var(--surface-color)] rounded-3xl pt-12 pb-7 px-7 text-center shadow-[0_20px_60px_-15px_rgba(16,185,129,0.15)] dark:shadow-[0_20px_60px_-15px_rgba(99,102,241,0.10)] w-full border border-emerald-500/20 dark:border-indigo-500/20 group mt-4"
-                >
-                    <div className="absolute inset-0 rounded-3xl overflow-hidden pointer-events-none">
-                        <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/40 dark:via-white/5 to-transparent -translate-x-full group-hover:animate-[shimmer_2s_infinite]" />
-                    </div>
-
-                    <div className="relative z-10 flex flex-col items-center">
-                        <motion.div
-                            animate={{ y: [0, -5, 0] }}
-                            transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut' }}
-                            className="absolute -top-12 left-1/2 -translate-x-1/2 text-amber-400 drop-shadow-lg"
-                        >
-                            <Crown weight="fill" size={56} />
-                        </motion.div>
-
-                        <div className="w-24 h-24 bg-emerald-50 dark:bg-indigo-500/10 rounded-3xl flex items-center justify-center text-4xl mb-5 shadow-inner border border-emerald-100 dark:border-indigo-500/20 relative overflow-hidden mt-4">
+                <motion.div variants={itemVariants} className="w-full mt-4">
+                    <WinnerCard
+                        containerClassName="pt-12 pb-7 px-7 shadow-[0_20px_60px_-15px_rgba(16,185,129,0.15)] dark:shadow-[0_20px_60px_-15px_rgba(99,102,241,0.10)] border-emerald-500/20 dark:border-indigo-500/20 group"
+                        overlay={(
+                            <div className="absolute inset-0 rounded-3xl overflow-hidden pointer-events-none">
+                                <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/40 dark:via-white/5 to-transparent -translate-x-full group-hover:animate-[shimmer_2s_infinite]" />
+                            </div>
+                        )}
+                        badge={(
+                            <motion.div
+                                animate={{ y: [0, -5, 0] }}
+                                transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut' }}
+                                className="absolute -top-12 left-1/2 -translate-x-1/2 text-amber-400 drop-shadow-lg"
+                            >
+                                <Crown weight="fill" size={56} />
+                            </motion.div>
+                        )}
+                        iconWrapperClassName="w-24 h-24 bg-emerald-50 dark:bg-indigo-500/10 rounded-3xl flex items-center justify-center text-4xl mb-5 shadow-inner border border-emerald-100 dark:border-indigo-500/20 relative overflow-hidden mt-4"
+                        icon={
                             <motion.span
                                 initial={{ scale: 0, rotate: -45 }}
                                 animate={{ scale: 1, rotate: 0 }}
@@ -83,14 +85,12 @@ export const ResultScreen: React.FC<Props> = ({ result, candidates, onRestart, o
                             >
                                 {winnerIcon}
                             </motion.span>
-                        </div>
-
+                        }
+                        title={result?.winnerName}
+                        titleClassName="text-2xl mb-6 font-display font-bold text-[var(--text-primary)] tracking-tight leading-tight"
+                    >
                         {result ? (
                             <>
-                                <h1 className="text-2xl mb-6 font-display font-bold text-[var(--text-primary)] tracking-tight leading-tight">
-                                    {result.winnerName}
-                                </h1>
-
                                 <div className="w-full bg-[var(--bg-color)] rounded-2xl p-4 text-sm leading-relaxed text-[var(--text-secondary)] font-medium border border-[var(--border-color)] flex flex-col gap-2.5 text-left shadow-inner">
                                     <div className="flex justify-between items-center border-b border-[var(--border-color)] pb-2.5">
                                         <span className="text-[var(--text-helper)]">종합 점수</span>
@@ -124,7 +124,7 @@ export const ResultScreen: React.FC<Props> = ({ result, candidates, onRestart, o
                                 결과를 계산할 데이터가 부족해요. 가중치/후보/점수를 먼저 입력해 주세요.
                             </div>
                         )}
-                    </div>
+                    </WinnerCard>
                 </motion.div>
             </motion.div>
 
