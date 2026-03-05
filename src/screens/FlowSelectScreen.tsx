@@ -1,10 +1,11 @@
-import React from 'react';
+﻿import React from 'react';
 import { motion, type Variants } from 'framer-motion';
 import { StepHeader } from '../components/common/StepHeader';
 import { Lightning, Scales, Shuffle } from '@phosphor-icons/react';
+import type { FlowType } from '../domain/types';
 
 interface FlowSelectScreenProps {
-    onSelectFlow: (flow: 'quick' | 'compare' | 'random') => void;
+    onSelectFlow: (flow: FlowType) => void;
     onBack: () => void;
     onHome?: () => void;
 }
@@ -34,7 +35,7 @@ export const FlowSelectScreen: React.FC<FlowSelectScreenProps> = ({ onSelectFlow
     return (
         <div className="flex flex-col w-full min-h-[100dvh] bg-[var(--bg-color)]">
             <div className="flex-none sticky top-0 z-20 liquid-glass border-b-0">
-                <StepHeader title="결정 방식 선택" onBack={onBack} onHome={onHome} />
+                <StepHeader title="寃곗젙 諛⑹떇 ?좏깮" onBack={onBack} onHome={onHome} />
             </div>
 
             <motion.div
@@ -45,10 +46,10 @@ export const FlowSelectScreen: React.FC<FlowSelectScreenProps> = ({ onSelectFlow
             >
                 <motion.div variants={itemVariants} className="mb-8 w-full">
                     <h2 className="text-2xl font-display font-semibold text-[var(--text-primary)] mb-2 tracking-tight">
-                        어떻게 고를까요?
+                        ?대뼸寃?怨좊?源뚯슂?
                     </h2>
                     <p className="text-[var(--text-secondary)] text-sm">
-                        지금 상황에 맞는 방법을 선택해 주세요.
+                        吏湲??곹솴??留욌뒗 諛⑸쾿???좏깮??二쇱꽭??
                     </p>
                 </motion.div>
 
@@ -71,12 +72,12 @@ export const FlowSelectScreen: React.FC<FlowSelectScreenProps> = ({ onSelectFlow
                                 <Lightning weight="fill" size={18} className="text-amber-600 dark:text-amber-300 group-hover:text-white transition-colors duration-300" />
                             </div>
                             <h3 className="text-[1.1rem] md:text-lg font-display font-semibold text-[var(--text-primary)] tracking-tight group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors duration-300">
-                                취향으로 빠르게 추천
+                                痍⑦뼢?쇰줈 鍮좊Ⅴ寃?異붿쿇
                             </h3>
                         </div>
 
                         <p className="relative z-10 text-[var(--text-secondary)] text-[0.85rem] md:text-sm leading-relaxed font-medium pl-12">
-                            태그만 고르면 바로 메뉴를 추천해 드려요.
+                            ?쒓렇留?怨좊Ⅴ硫?諛붾줈 硫붾돱瑜?異붿쿇???쒕젮??
                         </p>
                     </motion.button>
 
@@ -98,12 +99,12 @@ export const FlowSelectScreen: React.FC<FlowSelectScreenProps> = ({ onSelectFlow
                                 <Scales weight="fill" size={18} className="text-blue-600 dark:text-blue-300 group-hover:text-white transition-colors duration-300" />
                             </div>
                             <h3 className="text-[1.1rem] md:text-lg font-display font-semibold text-[var(--text-primary)] tracking-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300">
-                                직접 비교하기
+                                吏곸젒 鍮꾧탳?섍린
                             </h3>
                         </div>
 
                         <p className="relative z-10 text-[var(--text-secondary)] text-[0.85rem] md:text-sm leading-relaxed font-medium pl-12">
-                            후보를 넣고 점수로 더 체계적으로 결정해요.
+                            ?꾨낫瑜??ｊ퀬 ?먯닔濡???泥닿퀎?곸쑝濡?寃곗젙?댁슂.
                         </p>
                     </motion.button>
 
@@ -125,12 +126,11 @@ export const FlowSelectScreen: React.FC<FlowSelectScreenProps> = ({ onSelectFlow
                                 <Shuffle weight="fill" size={18} className="text-emerald-600 dark:text-emerald-300 group-hover:text-white transition-colors duration-300" />
                             </div>
                             <h3 className="text-[1.1rem] md:text-lg font-display font-semibold text-[var(--text-primary)] tracking-tight group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors duration-300">
-                                랜덤으로 고르기
-                            </h3>
+                                ?쒕뜡?쇰줈 怨좊Ⅴ湲?                            </h3>
                         </div>
 
                         <p className="relative z-10 text-[var(--text-secondary)] text-[0.85rem] md:text-sm leading-relaxed font-medium pl-12">
-                            고민 끝! 완전 랜덤 추천으로 바로 결정해요.
+                            怨좊? ?? ?꾩쟾 ?쒕뜡 異붿쿇?쇰줈 諛붾줈 寃곗젙?댁슂.
                         </p>
                     </motion.button>
                 </div>
@@ -138,3 +138,4 @@ export const FlowSelectScreen: React.FC<FlowSelectScreenProps> = ({ onSelectFlow
         </div>
     );
 };
+

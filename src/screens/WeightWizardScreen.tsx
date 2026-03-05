@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { motion, type Variants } from 'framer-motion';
 import { StepHeader } from '../components/common/StepHeader';
 import { ProgressBar } from '../components/common/ProgressBar';
@@ -6,6 +6,7 @@ import { BottomActionBar } from '../components/common/BottomActionBar';
 import { PrimaryButton } from '../components/common/PrimaryButton';
 import { HelperText } from '../components/common/HelperText';
 import { VerticalJellySlider } from '../components/common/VerticalJellySlider';
+import type { Weights } from '../domain/types';
 
 interface Props {
     onNext: () => void;
@@ -13,7 +14,7 @@ interface Props {
     onHome?: () => void;
 }
 
-const INITIAL_WEIGHTS = {
+const INITIAL_WEIGHTS: Weights = {
     taste: 40,
     price: 35,
     distance: 25,
@@ -35,14 +36,14 @@ const itemVariants: Variants = {
 export const WeightWizardScreen: React.FC<Props> = ({ onNext, onBack, onHome }) => {
     const [weights, setWeights] = useState(INITIAL_WEIGHTS);
 
-    const handleWeightChange = (key: keyof typeof INITIAL_WEIGHTS, newValue: number) => {
+    const handleWeightChange = (key: keyof Weights, newValue: number) => {
         const val = Math.max(0, Math.min(100, newValue));
         const diff = val - weights[key];
 
-        const otherKeys = (Object.keys(weights) as Array<keyof typeof INITIAL_WEIGHTS>).filter((k) => k !== key);
+        const otherKeys = (Object.keys(weights) as Array<keyof Weights>).filter((k) => k !== key);
         const currentOtherTotal = otherKeys.reduce((sum, k) => sum + weights[k], 0);
 
-        const newWeights = { ...weights, [key]: val };
+        const newWeights: Weights = { ...weights, [key]: val };
 
         if (currentOtherTotal === 0) {
             const half = (100 - val) / 2;
@@ -56,7 +57,7 @@ export const WeightWizardScreen: React.FC<Props> = ({ onNext, onBack, onHome }) 
             });
         }
 
-        const rounded = {
+        const rounded: Weights = {
             taste: Math.round(newWeights.taste),
             price: Math.round(newWeights.price),
             distance: Math.round(newWeights.distance),
