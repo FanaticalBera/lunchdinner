@@ -328,4 +328,129 @@
   { "id": "menu-298", "name": "스팸김치볶음밥", "icon": "🍚", "mealType": "both", "tags": ["한식", "가성비", "든든한"] },
   { "id": "menu-299", "name": "버섯불고기전골", "icon": "🍲", "mealType": "both", "tags": ["국물", "한식", "고기", "따뜻한", "든든한"] },
   { "id": "menu-300", "name": "닭곰탕", "icon": "🍲", "mealType": "both", "tags": ["국물", "한식", "따뜻한", "건강한"] }
+
+  ,
+  { "id": "menu-301", "name": "비지찌개", "icon": "🍲", "mealType": "lunch", "tags": ["국물", "한식", "가성비", "따뜻한"] },
+  { "id": "menu-302", "name": "닭개장", "icon": "🍲", "mealType": "both", "tags": ["국물", "한식", "매운맛", "든든한"] },
+  { "id": "menu-303", "name": "버섯전골", "icon": "🍲", "mealType": "dinner", "tags": ["국물", "한식", "건강한", "따뜻한"] },
+  { "id": "menu-304", "name": "콩비지백반", "icon": "🍚", "mealType": "lunch", "tags": ["한식", "가성비", "든든한"] },
+  { "id": "menu-305", "name": "고추장불고기정식", "icon": "🍱", "mealType": "lunch", "tags": ["한식", "고기", "든든한", "가성비"] },
+  { "id": "menu-306", "name": "불고기정식", "icon": "🍱", "mealType": "lunch", "tags": ["한식", "고기", "든든한", "가성비"] },
+  { "id": "menu-307", "name": "고등어구이정식", "icon": "🐟", "mealType": "lunch", "tags": ["한식", "해산물", "건강한", "든든한"] },
+  { "id": "menu-308", "name": "갈치구이정식", "icon": "🐟", "mealType": "lunch", "tags": ["한식", "해산물", "건강한", "든든한"] },
+  { "id": "menu-309", "name": "제철생선구이", "icon": "🐟", "mealType": "both", "tags": ["한식", "해산물", "건강한", "든든한"] },
+
+  { "id": "menu-310", "name": "장칼국수", "icon": "🍜", "mealType": "lunch", "tags": ["국물", "한식", "매운맛", "가성비"] },
+  { "id": "menu-311", "name": "얼큰칼국수", "icon": "🍜", "mealType": "lunch", "tags": ["국물", "한식", "매운맛", "든든한"] },
+  { "id": "menu-312", "name": "바지락수제비", "icon": "🍲", "mealType": "lunch", "tags": ["국물", "한식", "따뜻한", "든든한"] },
+  { "id": "menu-313", "name": "감자수제비", "icon": "🍲", "mealType": "lunch", "tags": ["국물", "한식", "가성비", "따뜻한"] },
+
+  { "id": "menu-314", "name": "내장탕", "icon": "🍲", "mealType": "lunch", "tags": ["국물", "한식", "든든한", "따뜻한"] },
+  { "id": "menu-315", "name": "도가니탕", "icon": "🍲", "mealType": "both", "tags": ["국물", "한식", "든든한", "따뜻한"] },
+  { "id": "menu-316", "name": "추어탕", "icon": "🍲", "mealType": "both", "tags": ["국물", "한식", "건강한", "따뜻한"] },
+  { "id": "menu-317", "name": "황태해장국", "icon": "🍲", "mealType": "lunch", "tags": ["국물", "한식", "가성비", "따뜻한"] },
+
+  { "id": "menu-318", "name": "김치볶음밥(계란)", "icon": "🍚", "mealType": "lunch", "tags": ["한식", "가성비", "든든한", "테이크아웃"] },
+  { "id": "menu-319", "name": "오므라이스(케찹)", "icon": "🍳", "mealType": "lunch", "tags": ["양식", "가성비", "든든한", "테이크아웃"] },
+  { "id": "menu-320", "name": "김치참치덮밥", "icon": "🍚", "mealType": "lunch", "tags": ["한식", "해산물", "가성비", "든든한"] },
+  { "id": "menu-321", "name": "버터간장계란밥", "icon": "🍚", "mealType": "lunch", "tags": ["한식", "가성비", "가벼운", "테이크아웃"] },
+  { "id": "menu-322", "name": "소시지볶음밥", "icon": "🍚", "mealType": "lunch", "tags": ["한식", "가성비", "든든한", "테이크아웃"] },
+  { "id": "menu-323", "name": "소고기볶음밥", "icon": "🍚", "mealType": "lunch", "tags": ["한식", "고기", "든든한", "가성비"] },
+
+  { "id": "menu-324", "name": "간짜장", "icon": "🍜", "mealType": "lunch", "tags": ["중식", "가성비", "든든한"] },
+  { "id": "menu-325", "name": "쟁반짜장", "icon": "🍜", "mealType": "lunch", "tags": ["중식", "든든한", "가성비"] },
+  { "id": "menu-326", "name": "짬짜면", "icon": "🍜", "mealType": "lunch", "tags": ["중식", "든든한", "가성비"] },
+  { "id": "menu-327", "name": "울면", "icon": "🍜", "mealType": "lunch", "tags": ["국물", "중식", "따뜻한", "든든한"] },
+  { "id": "menu-328", "name": "우육면", "icon": "🍜", "mealType": "both", "tags": ["국물", "중식", "든든한", "따뜻한"] },
+  { "id": "menu-329", "name": "마라반", "icon": "🥘", "mealType": "both", "tags": ["중식", "매운맛", "든든한"] },
+  { "id": "menu-330", "name": "마라샹궈(야채)", "icon": "🥘", "mealType": "dinner", "tags": ["중식", "매운맛", "든든한"] },
+
+  { "id": "menu-331", "name": "가츠카레", "icon": "🍛", "mealType": "lunch", "tags": ["일식", "고기", "든든한", "가성비"] },
+  { "id": "menu-332", "name": "치킨카레", "icon": "🍛", "mealType": "lunch", "tags": ["일식", "고기", "가성비", "든든한"] },
+  { "id": "menu-333", "name": "야채카레", "icon": "🍛", "mealType": "lunch", "tags": ["일식", "건강한", "가성비", "든든한"] },
+  { "id": "menu-334", "name": "나가사키짬뽕", "icon": "🍜", "mealType": "dinner", "tags": ["국물", "일식", "따뜻한", "든든한"] },
+  { "id": "menu-335", "name": "냉우동", "icon": "🍜", "mealType": "lunch", "tags": ["일식", "가벼운", "가성비"] },
+
+  { "id": "menu-336", "name": "치킨랩", "icon": "🌯", "mealType": "lunch", "tags": ["양식", "테이크아웃", "가벼운", "가성비"] },
+  { "id": "menu-337", "name": "터키샌드위치", "icon": "🥪", "mealType": "lunch", "tags": ["양식", "테이크아웃", "가벼운", "가성비"] },
+  { "id": "menu-338", "name": "토핑샐러드", "icon": "🥗", "mealType": "lunch", "tags": ["샐러드", "건강한", "가벼운"] },
+  { "id": "menu-339", "name": "두부포케", "icon": "🥗", "mealType": "lunch", "tags": ["샐러드", "건강한", "가벼운"] },
+  { "id": "menu-340", "name": "비빔샐러드", "icon": "🥗", "mealType": "lunch", "tags": ["샐러드", "건강한", "가벼운", "가성비"] },
+
+  { "id": "menu-341", "name": "주꾸미삼겹", "icon": "🐙", "mealType": "dinner", "tags": ["한식", "고기", "매운맛", "든든한"] },
+  { "id": "menu-342", "name": "낙곱새", "icon": "🥘", "mealType": "dinner", "tags": ["한식", "해산물", "매운맛", "든든한"] },
+  { "id": "menu-343", "name": "곱도리탕", "icon": "🍲", "mealType": "dinner", "tags": ["국물", "한식", "매운맛", "든든한"] },
+  { "id": "menu-344", "name": "대패삼겹살", "icon": "🥩", "mealType": "dinner", "tags": ["고기", "한식", "가성비", "든든한"] },
+  { "id": "menu-345", "name": "돼지껍데기", "icon": "🍖", "mealType": "dinner", "tags": ["고기", "한식", "분위기", "든든한"] },
+  { "id": "menu-346", "name": "닭한마리칼국수", "icon": "🍲", "mealType": "dinner", "tags": ["국물", "한식", "따뜻한", "든든한"] },
+  { "id": "menu-347", "name": "한우육회", "icon": "🥩", "mealType": "dinner", "tags": ["한식", "고기", "분위기", "가벼운"] },
+  { "id": "menu-348", "name": "육사시미", "icon": "🥩", "mealType": "dinner", "tags": ["한식", "고기", "분위기", "가벼운"] },
+  { "id": "menu-349", "name": "해물누룽지탕", "icon": "🍲", "mealType": "dinner", "tags": ["국물", "중식", "해산물", "따뜻한"] },
+
+  { "id": "menu-350", "name": "난자완스", "icon": "🥘", "mealType": "dinner", "tags": ["중식", "고기", "분위기", "든든한"] },
+  { "id": "menu-351", "name": "동파육", "icon": "🍖", "mealType": "dinner", "tags": ["중식", "고기", "분위기", "든든한"] },
+  { "id": "menu-352", "name": "고기완자탕", "icon": "🍲", "mealType": "dinner", "tags": ["국물", "중식", "따뜻한", "든든한"] },
+  { "id": "menu-353", "name": "양갈비구이", "icon": "🥩", "mealType": "dinner", "tags": ["고기", "양식", "분위기", "든든한"] },
+  { "id": "menu-354", "name": "양고기스테이크", "icon": "🥩", "mealType": "dinner", "tags": ["양식", "고기", "분위기", "든든한"] },
+
+  { "id": "menu-355", "name": "회", "icon": "🐟", "mealType": "dinner", "tags": ["해산물", "한식", "분위기", "가벼운"] },
+  { "id": "menu-356", "name": "모둠회", "icon": "🍣", "mealType": "dinner", "tags": ["해산물", "한식", "분위기", "가벼운"] },
+  { "id": "menu-357", "name": "광어회", "icon": "🐟", "mealType": "dinner", "tags": ["해산물", "한식", "분위기", "가벼운"] },
+  { "id": "menu-358", "name": "연어회", "icon": "🐟", "mealType": "dinner", "tags": ["해산물", "일식", "분위기", "가벼운"] },
+  { "id": "menu-359", "name": "참치회", "icon": "🐟", "mealType": "dinner", "tags": ["해산물", "일식", "분위기", "가벼운"] },
+
+  { "id": "menu-360", "name": "해물전골", "icon": "🍲", "mealType": "dinner", "tags": ["국물", "한식", "해산물", "따뜻한", "든든한"] },
+  { "id": "menu-361", "name": "소고기전골", "icon": "🍲", "mealType": "dinner", "tags": ["국물", "한식", "고기", "따뜻한", "든든한"] },
+  { "id": "menu-362", "name": "버섯샤브샤브", "icon": "🍲", "mealType": "dinner", "tags": ["국물", "건강한", "따뜻한", "든든한"] },
+  { "id": "menu-363", "name": "소고기샤브샤브", "icon": "🍲", "mealType": "dinner", "tags": ["국물", "고기", "따뜻한", "든든한"] },
+
+  { "id": "menu-364", "name": "치즈퐁듀닭갈비", "icon": "🍗", "mealType": "dinner", "tags": ["한식", "고기", "분위기", "든든한"] },
+  { "id": "menu-365", "name": "로제떡볶이", "icon": "🍢", "mealType": "both", "tags": ["한식", "매운맛", "테이크아웃", "든든한"] },
+  { "id": "menu-366", "name": "국물떡볶이", "icon": "🍢", "mealType": "both", "tags": ["한식", "매운맛", "가성비", "테이크아웃"] },
+
+  { "id": "menu-367", "name": "치킨&맥주", "icon": "🍗", "mealType": "dinner", "tags": ["양식", "분위기", "든든한", "테이크아웃"] },
+  { "id": "menu-368", "name": "양념치킨", "icon": "🍗", "mealType": "dinner", "tags": ["양식", "매운맛", "든든한", "테이크아웃"] },
+  { "id": "menu-369", "name": "간장치킨", "icon": "🍗", "mealType": "dinner", "tags": ["양식", "든든한", "테이크아웃", "분위기"] },
+
+  { "id": "menu-370", "name": "치즈피자", "icon": "🍕", "mealType": "dinner", "tags": ["양식", "테이크아웃", "든든한", "분위기"] },
+  { "id": "menu-371", "name": "페퍼로니피자", "icon": "🍕", "mealType": "dinner", "tags": ["양식", "테이크아웃", "든든한", "분위기"] },
+  { "id": "menu-372", "name": "불고기피자", "icon": "🍕", "mealType": "dinner", "tags": ["양식", "고기", "테이크아웃", "든든한"] },
+
+  { "id": "menu-373", "name": "감자튀김", "icon": "🍟", "mealType": "both", "tags": ["양식", "가성비", "테이크아웃", "가벼운"] },
+  { "id": "menu-374", "name": "치즈스틱", "icon": "🧀", "mealType": "both", "tags": ["양식", "가성비", "테이크아웃", "가벼운"] },
+
+  { "id": "menu-375", "name": "토마토파스타", "icon": "🍝", "mealType": "dinner", "tags": ["양식", "분위기", "든든한", "따뜻한"] },
+  { "id": "menu-376", "name": "봉골레파스타", "icon": "🍝", "mealType": "dinner", "tags": ["양식", "해산물", "분위기", "든든한"] },
+  { "id": "menu-377", "name": "매운해물파스타", "icon": "🍝", "mealType": "dinner", "tags": ["양식", "해산물", "매운맛", "든든한"] },
+
+  { "id": "menu-378", "name": "차돌박이", "icon": "🥩", "mealType": "dinner", "tags": ["고기", "한식", "분위기", "든든한"] },
+  { "id": "menu-379", "name": "우삼겹구이", "icon": "🥩", "mealType": "dinner", "tags": ["고기", "한식", "가성비", "든든한"] },
+  { "id": "menu-380", "name": "가브리살", "icon": "🥩", "mealType": "dinner", "tags": ["고기", "한식", "분위기", "든든한"] },
+  { "id": "menu-381", "name": "토시살", "icon": "🥩", "mealType": "dinner", "tags": ["고기", "한식", "분위기", "든든한"] },
+
+  { "id": "menu-382", "name": "해물라면", "icon": "🍜", "mealType": "both", "tags": ["국물", "한식", "해산물", "든든한"] },
+  { "id": "menu-383", "name": "치즈라면", "icon": "🍜", "mealType": "both", "tags": ["국물", "한식", "가성비", "든든한"] },
+  { "id": "menu-384", "name": "라면&김밥", "icon": "🍜", "mealType": "lunch", "tags": ["한식", "가성비", "든든한", "테이크아웃"] },
+
+  { "id": "menu-385", "name": "파김치전", "icon": "🥞", "mealType": "dinner", "tags": ["한식", "분위기", "가성비", "든든한"] },
+  { "id": "menu-386", "name": "감자전", "icon": "🥞", "mealType": "dinner", "tags": ["한식", "가성비", "분위기", "든든한"] },
+  { "id": "menu-387", "name": "부추전골", "icon": "🍲", "mealType": "dinner", "tags": ["국물", "한식", "따뜻한", "든든한"] },
+
+  { "id": "menu-388", "name": "카이팟(태국볶음밥)", "icon": "🍚", "mealType": "both", "tags": ["아시안", "가성비", "든든한", "따뜻한"] },
+  { "id": "menu-389", "name": "분보후에", "icon": "🍜", "mealType": "both", "tags": ["국물", "아시안", "매운맛", "든든한"] },
+
+  { "id": "menu-390", "name": "김치볶음우동(매운)", "icon": "🍜", "mealType": "both", "tags": ["일식", "매운맛", "든든한", "가성비"] },
+  { "id": "menu-391", "name": "탄탄멘", "icon": "🍜", "mealType": "both", "tags": ["국물", "일식", "매운맛", "든든한"] },
+  { "id": "menu-392", "name": "돈부리(모둠)", "icon": "🍚", "mealType": "both", "tags": ["일식", "가성비", "든든한"] },
+
+  { "id": "menu-393", "name": "스팸부대볶음", "icon": "🥘", "mealType": "both", "tags": ["한식", "가성비", "든든한", "매운맛"] },
+  { "id": "menu-394", "name": "김치삼겹볶음", "icon": "🥘", "mealType": "both", "tags": ["한식", "고기", "든든한", "매운맛"] },
+
+  { "id": "menu-395", "name": "해물볶음밥", "icon": "🍚", "mealType": "both", "tags": ["해산물", "중식", "가성비", "든든한"] },
+  { "id": "menu-396", "name": "잡탕밥", "icon": "🍚", "mealType": "both", "tags": ["중식", "해산물", "든든한", "따뜻한"] },
+
+  { "id": "menu-397", "name": "토마토계란볶음밥", "icon": "🍚", "mealType": "both", "tags": ["중식", "가성비", "든든한", "따뜻한"] },
+  { "id": "menu-398", "name": "라볶이(순한맛)", "icon": "🍲", "mealType": "both", "tags": ["한식", "가성비", "테이크아웃", "든든한"] },
+  { "id": "menu-399", "name": "김치우동", "icon": "🍜", "mealType": "both", "tags": ["국물", "일식", "매운맛", "든든한"] },
+  { "id": "menu-400", "name": "수육", "icon": "🍖", "mealType": "dinner", "tags": ["고기", "한식", "든든한", "분위기"] }
 ]
