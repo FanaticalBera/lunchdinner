@@ -13,5 +13,20 @@
   { "id": "menu-12", "name": "파스타", "icon": "\ud83c\udf5d", "mealType": "dinner", "tags": ["양식", "분위기", "든든한"] },
   { "id": "menu-13", "name": "비빔밥", "icon": "\ud83c\udf5a", "mealType": "both", "tags": ["한식", "건강한", "든든한"] },
   { "id": "menu-14", "name": "쌀국수", "icon": "\ud83c\udf5c", "mealType": "both", "tags": ["국물", "아시안", "가벼운", "따뜻한"] },
-  { "id": "menu-15", "name": "햄버거", "icon": "\ud83c\udf54", "mealType": "lunch", "tags": ["양식", "가성비", "든든한", "테이크아웃"] }
+  { "id": "menu-15", "name": "햄버거", "icon": "\ud83c\udf54", "mealType": "lunch", "tags": ["양식", "가성비", "든든한", "테이크아웃"] },
+  { "id": "menu-16", "name": "닭갈비", "icon": "\ud83c\udf57", "mealType": "dinner", "tags": ["고기", "한식", "매운맛", "든든한"] },
+  { "id": "menu-17", "name": "냉모밀", "icon": "\ud83c\udf5c", "mealType": "lunch", "tags": ["일식", "가벼운", "브런치", "가성비"] },
+  { "id": "menu-18", "name": "오므라이스", "icon": "\ud83c\udf5b", "mealType": "both", "tags": ["양식", "가성비", "든든한", "브런치"] },
+  { "id": "menu-19", "name": "그린샐러드", "icon": "\ud83e\udd57", "mealType": "lunch", "tags": ["샐러드", "건강한", "가벼운", "브런치"] },
+  { "id": "menu-20", "name": "치킨시저샐러드", "icon": "\ud83e\udd57", "mealType": "both", "tags": ["샐러드", "건강한", "고기", "든든한"] },
+  { "id": "menu-21", "name": "아보카도토스트", "icon": "\ud83e\udd51", "mealType": "lunch", "tags": ["브런치", "가벼운", "건강한", "분위기"] },
+  { "id": "menu-22", "name": "에그베네딕트", "icon": "\ud83c\udf73", "mealType": "lunch", "tags": ["브런치", "분위기", "가벼운", "양식"] },
+  { "id": "menu-23", "name": "팟타이", "icon": "\ud83c\udf5c", "mealType": "both", "tags": ["아시안", "해산물", "가성비", "든든한"] },
+  { "id": "menu-24", "name": "나시고렝", "icon": "\ud83c\udf5a", "mealType": "both", "tags": ["아시안", "고기", "매운맛", "든든한"] },
+  { "id": "menu-25", "name": "스테이크", "icon": "\ud83e\udd69", "mealType": "dinner", "tags": ["양식", "고기", "분위기", "든든한"] },
+  { "id": "menu-26", "name": "리조또", "icon": "\ud83c\udf5a", "mealType": "dinner", "tags": ["양식", "분위기", "든든한", "따뜻한"] },
+  { "id": "menu-27", "name": "초밥", "icon": "\ud83c\udf63", "mealType": "both", "tags": ["일식", "해산물", "분위기", "가벼운"] },
+  { "id": "menu-28", "name": "부대찌개", "icon": "\ud83c\udf72", "mealType": "dinner", "tags": ["국물", "한식", "매운맛", "든든한"] },
+  { "id": "menu-29", "name": "타코볼", "icon": "\ud83c\udf2e", "mealType": "both", "tags": ["테이크아웃", "양식", "가벼운", "건강한"] },
+  { "id": "menu-30", "name": "떡볶이", "icon": "\ud83c\udf62", "mealType": "lunch", "tags": ["한식", "매운맛", "가성비", "테이크아웃"] }
 ]
