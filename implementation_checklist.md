@@ -36,22 +36,22 @@
 - [x] 화면 이동/핵심 상태 변경이 reducer 액션으로만 수행된다.
 
 ### 4) 순수 계산 함수 먼저 작성
-- [ ] 비교 플로우 점수 계산 함수 작성 (`weights + scores -> total`)
-- [ ] 랭킹/동점 처리 함수 작성
-- [ ] Quick/Random 추천용 선택 함수 작성 (입력: 태그/메뉴목록)
-- [ ] 최소 샘플 케이스로 계산 결과 검증
+- [x] 비교 플로우 점수 계산 함수 작성 (`weights + scores -> total`)
+- [x] 랭킹/동점 처리 함수 작성
+- [x] Quick/Random 추천용 선택 함수 작성 (입력: 태그/메뉴목록)
+- [x] 최소 샘플 케이스로 계산 결과 검증
 
 완료 기준
-- [ ] UI 없이 함수만으로 결과를 재현할 수 있다.
+- [x] UI 없이 함수만으로 결과를 재현할 수 있다.
 
 ### 5) Weight / Candidate / Scoring를 reducer에 연결
-- [ ] `WeightWizardScreen` -> reducer 상태/액션 연결
-- [ ] `CandidateInputScreen` -> reducer 상태/액션 연결
-- [ ] `ScoringBoardScreen` -> reducer 상태/액션 연결
-- [ ] 뒤로가기 후 재진입 시 입력 상태 유지 확인
+- [x] `WeightWizardScreen` -> reducer 상태/액션 연결
+- [x] `CandidateInputScreen` -> reducer 상태/액션 연결
+- [x] `ScoringBoardScreen` -> reducer 상태/액션 연결
+- [x] 뒤로가기 후 재진입 시 입력 상태 유지 확인
 
 완료 기준
-- [ ] compare 플로우 입력값이 화면 간 끊기지 않고 유지된다.
+- [x] compare 플로우 입력값이 화면 간 끊기지 않고 유지된다.
 
 ### 6) Result는 계산 함수 결과로 렌더
 - [ ] `ResultScreen` 하드코딩 제거
@@ -107,3 +107,16 @@
 - 핵심 변경: 앱 전역 상태를 useReducer로 통합하고, 화면 전이/모드/플로우 변경을 reducer 액션 디스패치로 일원화함.
 - 검증 결과: node_modules/.bin/tsc --noEmit 통과 (npm run typecheck는 로컬 npm 경로 이슈로 실행 불가).
 - 남은 이슈: Step 5에서 Weight/Candidate/Scoring 입력 컴포넌트를 reducer 상태에 직접 연결 필요.
+
+### Step 4 완료
+- 변경 파일: src/domain/recommendation.ts, src/domain/recommendation.samples.ts
+- 핵심 변경: compare 점수 계산/랭킹(동점 포함), quick/random 추천 선택 함수를 순수 함수로 분리함.
+- 검증 결과: node_modules/.bin/tsc --noEmit 통과, node --experimental-strip-types src/domain/recommendation.samples.ts 실행 통과.
+- 남은 이슈: Step 5에서 각 입력 화면 상태를 reducer 액션으로 연결 필요.
+
+### Step 5 완료
+- 변경 파일: src/App.tsx, src/domain/state.ts, src/screens/WeightWizardScreen.tsx, src/screens/CandidateInputScreen.tsx, src/screens/ScoringBoardScreen.tsx
+- 핵심 변경: Weight/Candidate/Scoring 화면 로컬 상태를 reducer 상태/액션으로 이관하고, compare 플로우 입력값이 화면 전이 및 뒤로가기 후에도 유지되도록 연결함.
+- 검증 결과: node_modules/.bin/tsc --noEmit 통과.
+- 남은 이슈: Step 6에서 ResultScreen 하드코딩 제거 및 계산 함수 결과 렌더 연결 필요.
+

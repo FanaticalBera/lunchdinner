@@ -20,6 +20,11 @@ export type AppAction =
     | { type: 'SET_TAGS'; tags: QuickTag[] }
     | { type: 'RESET' };
 
+const INITIAL_CANDIDATES: Candidate[] = [
+    { id: '1', name: '김치찌개 전문점', icon: '🍲' },
+    { id: '2', name: '옆집 돈까스', icon: '🍱' },
+];
+
 export const initialAppState: AppState = {
     currentStep: 'intro',
     mode: null,
@@ -29,7 +34,7 @@ export const initialAppState: AppState = {
         price: 35,
         distance: 25,
     },
-    candidates: [],
+    candidates: INITIAL_CANDIDATES,
     scores: {},
     quickTags: [],
 };
@@ -39,6 +44,12 @@ const flowToStep: Record<FlowType, Step> = {
     random: 'quick2',
     compare: 'compare1',
 };
+
+function pickValidScores(scores: ScoreMatrix, validCandidateIds: Set<string>): ScoreMatrix {
+    return Object.fromEntries(
+        Object.entries(scores).filter(([candidateId]) => validCandidateIds.has(candidateId))
+    );
+}
 
 export function appReducer(state: AppState, action: AppAction): AppState {
     switch (action.type) {
@@ -64,11 +75,14 @@ export function appReducer(state: AppState, action: AppAction): AppState {
                 ...state,
                 weights: action.weights,
             };
-        case 'SET_CANDIDATES':
+        case 'SET_CANDIDATES': {
+            const validIds = new Set(action.candidates.map((candidate) => candidate.id));
             return {
                 ...state,
                 candidates: action.candidates,
+                scores: pickValidScores(state.scores, validIds),
             };
+        }
         case 'SET_SCORE':
             return {
                 ...state,
@@ -86,7 +100,13 @@ export function appReducer(state: AppState, action: AppAction): AppState {
                 quickTags: [...new Set(action.tags)],
             };
         case 'RESET':
-            return initialAppState;
+            return {
+                ...initialAppState,
+                weights: { ...initialAppState.weights },
+                candidates: [...initialAppState.candidates],
+                scores: {},
+                quickTags: [],
+            };
         default:
             return state;
     }

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { motion, type Variants } from 'framer-motion';
 import { StepHeader } from '../components/common/StepHeader';
 import { ProgressBar } from '../components/common/ProgressBar';
@@ -6,15 +6,25 @@ import { BottomActionBar } from '../components/common/BottomActionBar';
 import { PrimaryButton } from '../components/common/PrimaryButton';
 import { HelperText } from '../components/common/HelperText';
 import { Storefront } from '@phosphor-icons/react';
+import type { Candidate, CriterionKey, ScoreMatrix } from '../domain/types';
 
 interface Props {
+    candidates: Candidate[];
+    scores: ScoreMatrix;
+    onScoreChange: (candidateId: string, criterion: CriterionKey, score: number) => void;
     onNext: () => void;
     onBack: () => void;
     onHome?: () => void;
 }
 
-const TABS = ['맛', '가성비', '거리', '대기'];
-const EMOJIS = ['😡', '😕', '😐', '🙂', '🤩'];
+const TAB_CONFIG: Array<{ key: CriterionKey; label: string }> = [
+    { key: 'taste', label: '맛' },
+    { key: 'price', label: '가성비' },
+    { key: 'distance', label: '거리' },
+    { key: 'waitTime', label: '대기' },
+];
+
+const EMOJIS = ['😞', '😐', '🙂', '😋', '🤩'];
 
 const containerVariants: Variants = {
     hidden: { opacity: 0 },
@@ -26,17 +36,16 @@ const itemVariants: Variants = {
     show: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 100, damping: 20 } }
 };
 
-export const ScoringBoardScreen: React.FC<Props> = ({ onNext, onBack, onHome }) => {
+export const ScoringBoardScreen: React.FC<Props> = ({
+    candidates,
+    scores,
+    onScoreChange,
+    onNext,
+    onBack,
+    onHome,
+}) => {
     const [activeTab, setActiveTab] = useState(0);
-
-    const [scores, setScores] = useState<Record<string, number>>({
-        c1: 2,
-        c2: 2
-    });
-
-    const setScore = (id: string, index: number) => {
-        setScores((prev) => ({ ...prev, [id]: index }));
-    };
+    const activeCriterion = TAB_CONFIG[activeTab].key;
 
     return (
         <div className="flex-1 flex flex-col bg-[var(--bg-color)] h-[100dvh] relative overflow-hidden">
@@ -45,16 +54,19 @@ export const ScoringBoardScreen: React.FC<Props> = ({ onNext, onBack, onHome }) 
                 <ProgressBar currentStep={3} totalSteps={4} />
 
                 <div className="flex px-4 pt-1 bg-[var(--surface-color)]">
-                    {TABS.map((tab, i) => {
-                        const isActive = i === activeTab;
+                    {TAB_CONFIG.map((tab, index) => {
+                        const isActive = index === activeTab;
                         return (
                             <button
-                                key={tab}
-                                onClick={() => setActiveTab(i)}
-                                className={`flex-1 text-center py-3 text-sm transition-all relative outline-none ${isActive ? 'font-bold text-emerald-500' : 'font-medium text-[var(--text-helper)] hover:text-[var(--text-secondary)]'
-                                    }`}
+                                key={tab.key}
+                                onClick={() => setActiveTab(index)}
+                                className={`flex-1 text-center py-3 text-sm transition-all relative outline-none ${
+                                    isActive
+                                        ? 'font-bold text-emerald-500'
+                                        : 'font-medium text-[var(--text-helper)] hover:text-[var(--text-secondary)]'
+                                }`}
                             >
-                                {tab}
+                                {tab.label}
                                 {isActive && (
                                     <motion.div
                                         layoutId="activeTabIndicator"
@@ -78,79 +90,68 @@ export const ScoringBoardScreen: React.FC<Props> = ({ onNext, onBack, onHome }) 
             >
                 <div className="mb-6 w-full max-w-sm mx-auto mt-2">
                     <motion.h2 variants={itemVariants} className="text-2xl font-display font-semibold text-[var(--text-primary)] tracking-tight leading-snug mb-2">
-                        직관대로 선택하고
+                        직관적으로 선택하고
                         <br />
                         빠르게 결정해요
                     </motion.h2>
                     <motion.div variants={itemVariants}>
-                        <HelperText message={`현재 [${TABS[activeTab]}] 기준으로 평가 중입니다.`} />
+                        <HelperText message={`현재 [${TAB_CONFIG[activeTab].label}] 기준으로 점수 평가 중입니다.`} />
                     </motion.div>
                 </div>
 
                 <div className="flex flex-col gap-4 w-full max-w-sm mx-auto">
-                    <motion.div variants={itemVariants} className="bg-[var(--surface-color)] p-5 rounded-3xl shadow-[var(--shadow-sm)] border border-[var(--border-color)] flex flex-col gap-5 group hover:shadow-[var(--shadow-md)] transition-shadow">
-                        <div className="flex items-center gap-3">
-                            <div className="w-11 h-11 bg-slate-50 dark:bg-zinc-800 rounded-2xl flex items-center justify-center shadow-inner border border-[var(--border-color)]">
-                                <Storefront weight="duotone" size={22} className="text-[var(--text-secondary)]" />
-                            </div>
-                            <h3 className="text-base font-bold text-[var(--text-primary)]">김치찌개 전문점</h3>
-                        </div>
+                    {candidates.map((candidate) => {
+                        const selectedScore = scores[candidate.id]?.[activeCriterion];
 
-                        <div className="flex justify-between px-3 items-center bg-slate-50 dark:bg-zinc-800/50 py-3.5 rounded-2xl border border-[var(--border-color)]">
-                            {EMOJIS.map((emoji, idx) => {
-                                const isSelected = scores.c1 === idx;
-                                return (
-                                    <motion.button
-                                        key={idx}
-                                        onClick={() => setScore('c1', idx)}
-                                        whileTap={{ scale: 0.85 }}
-                                        className={`text-3xl transition-all relative outline-none p-1 ${isSelected ? 'scale-125 hover:scale-125 grayscale-0 z-10 drop-shadow-md' : 'opacity-50 grayscale hover:grayscale-0 hover:opacity-100 hover:scale-110'}`}
-                                    >
-                                        {emoji}
-                                        {isSelected && (
-                                            <motion.div
-                                                layoutId="c1-emoji"
-                                                className="absolute -inset-1.5 bg-emerald-500/15 rounded-full -z-10"
-                                                transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                                            />
+                        return (
+                            <motion.div
+                                key={candidate.id}
+                                variants={itemVariants}
+                                className="bg-[var(--surface-color)] p-5 rounded-3xl shadow-[var(--shadow-sm)] border border-[var(--border-color)] flex flex-col gap-5 group hover:shadow-[var(--shadow-md)] transition-shadow"
+                            >
+                                <div className="flex items-center gap-3">
+                                    <div className="w-11 h-11 bg-slate-50 dark:bg-zinc-800 rounded-2xl flex items-center justify-center shadow-inner border border-[var(--border-color)]">
+                                        {candidate.icon ? (
+                                            <span className="text-xl">{candidate.icon}</span>
+                                        ) : (
+                                            <Storefront weight="duotone" size={22} className="text-[var(--text-secondary)]" />
                                         )}
-                                    </motion.button>
-                                );
-                            })}
-                        </div>
-                    </motion.div>
+                                    </div>
+                                    <h3 className="text-base font-bold text-[var(--text-primary)]">{candidate.name}</h3>
+                                </div>
 
-                    <motion.div variants={itemVariants} className="bg-[var(--surface-color)] p-5 rounded-3xl shadow-[var(--shadow-sm)] border border-[var(--border-color)] flex flex-col gap-5 group hover:shadow-[var(--shadow-md)] transition-shadow">
-                        <div className="flex items-center gap-3">
-                            <div className="w-11 h-11 bg-slate-50 dark:bg-zinc-800 rounded-2xl flex items-center justify-center shadow-inner border border-[var(--border-color)]">
-                                <Storefront weight="duotone" size={22} className="text-[var(--text-secondary)]" />
-                            </div>
-                            <h3 className="text-base font-bold text-[var(--text-primary)]">옆집 돈까스</h3>
-                        </div>
+                                <div className="flex justify-between px-3 items-center bg-slate-50 dark:bg-zinc-800/50 py-3.5 rounded-2xl border border-[var(--border-color)]">
+                                    {EMOJIS.map((emoji, index) => {
+                                        const score = index + 1;
+                                        const isSelected = selectedScore === score;
 
-                        <div className="flex justify-between px-3 items-center bg-slate-50 dark:bg-zinc-800/50 py-3.5 rounded-2xl border border-[var(--border-color)]">
-                            {EMOJIS.map((emoji, idx) => {
-                                const isSelected = scores.c2 === idx;
-                                return (
-                                    <motion.button
-                                        key={idx}
-                                        onClick={() => setScore('c2', idx)}
-                                        whileTap={{ scale: 0.85 }}
-                                        className={`text-3xl transition-all relative outline-none p-1 ${isSelected ? 'scale-125 hover:scale-125 grayscale-0 z-10 drop-shadow-md' : 'opacity-50 grayscale hover:grayscale-0 hover:opacity-100 hover:scale-110'}`}
-                                    >
-                                        {emoji}
-                                        {isSelected && (
-                                            <motion.div
-                                                layoutId="c2-emoji"
-                                                className="absolute -inset-1.5 bg-emerald-500/15 rounded-full -z-10"
-                                                transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                                            />
-                                        )}
-                                    </motion.button>
-                                );
-                            })}
-                        </div>
-                    </motion.div>
+                                        return (
+                                            <motion.button
+                                                key={emoji}
+                                                onClick={() => onScoreChange(candidate.id, activeCriterion, score)}
+                                                whileTap={{ scale: 0.85 }}
+                                                className={`text-3xl transition-all relative outline-none p-1 ${
+                                                    isSelected
+                                                        ? 'scale-125 hover:scale-125 grayscale-0 z-10 drop-shadow-md'
+                                                        : 'opacity-50 grayscale hover:grayscale-0 hover:opacity-100 hover:scale-110'
+                                                }`}
+                                                aria-label={`${candidate.name} ${TAB_CONFIG[activeTab].label} ${score}점`}
+                                            >
+                                                {emoji}
+                                                {isSelected && (
+                                                    <motion.div
+                                                        layoutId={`${candidate.id}-${activeCriterion}-emoji`}
+                                                        className="absolute -inset-1.5 bg-emerald-500/15 rounded-full -z-10"
+                                                        transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                                                    />
+                                                )}
+                                            </motion.button>
+                                        );
+                                    })}
+                                </div>
+                            </motion.div>
+                        );
+                    })}
                 </div>
             </motion.div>
 

@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+﻿import React from 'react';
 import { motion, type Variants } from 'framer-motion';
 import { StepHeader } from '../components/common/StepHeader';
 import { ProgressBar } from '../components/common/ProgressBar';
@@ -9,16 +9,12 @@ import { VerticalJellySlider } from '../components/common/VerticalJellySlider';
 import type { Weights } from '../domain/types';
 
 interface Props {
+    weights: Weights;
+    onWeightsChange: (weights: Weights) => void;
     onNext: () => void;
     onBack: () => void;
     onHome?: () => void;
 }
-
-const INITIAL_WEIGHTS: Weights = {
-    taste: 40,
-    price: 35,
-    distance: 25,
-};
 
 const containerVariants: Variants = {
     hidden: { opacity: 0 },
@@ -33,9 +29,13 @@ const itemVariants: Variants = {
     show: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 100, damping: 20 } }
 };
 
-export const WeightWizardScreen: React.FC<Props> = ({ onNext, onBack, onHome }) => {
-    const [weights, setWeights] = useState(INITIAL_WEIGHTS);
-
+export const WeightWizardScreen: React.FC<Props> = ({
+    weights,
+    onWeightsChange,
+    onNext,
+    onBack,
+    onHome,
+}) => {
     const handleWeightChange = (key: keyof Weights, newValue: number) => {
         const val = Math.max(0, Math.min(100, newValue));
         const diff = val - weights[key];
@@ -66,11 +66,14 @@ export const WeightWizardScreen: React.FC<Props> = ({ onNext, onBack, onHome }) 
         const total = rounded.taste + rounded.price + rounded.distance;
         if (total !== 100) {
             const adjustment = 100 - total;
-            if (key !== 'taste') rounded.taste += adjustment;
-            else rounded.price += adjustment;
+            if (key !== 'taste') {
+                rounded.taste += adjustment;
+            } else {
+                rounded.price += adjustment;
+            }
         }
 
-        setWeights(rounded);
+        onWeightsChange(rounded);
     };
 
     return (

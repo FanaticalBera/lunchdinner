@@ -9,6 +9,8 @@ import { X, Plus, Storefront } from '@phosphor-icons/react';
 import type { Candidate } from '../domain/types';
 
 interface Props {
+    candidates: Candidate[];
+    onCandidatesChange: (candidates: Candidate[]) => void;
     onNext: () => void;
     onBack: () => void;
     onHome?: () => void;
@@ -28,24 +30,34 @@ const itemVariants: Variants = {
     exit: { opacity: 0, scale: 0.9, y: -10, transition: { duration: 0.2 } }
 };
 
-export const CandidateInputScreen: React.FC<Props> = ({ onNext, onBack, onHome }) => {
-    const [candidates, setCandidates] = useState<Candidate[]>([
-        { id: '1', name: '김치찌개 전문점', icon: '🍲' },
-        { id: '2', name: '옆집 돈까스', icon: '🍱' }
-    ]);
+export const CandidateInputScreen: React.FC<Props> = ({
+    candidates,
+    onCandidatesChange,
+    onNext,
+    onBack,
+    onHome,
+}) => {
     const [inputValue, setInputValue] = useState('');
 
     const handleAdd = (e?: React.FormEvent) => {
         if (e) e.preventDefault();
+
         const trimmed = inputValue.trim();
-        if (trimmed && !candidates.find((c) => c.name === trimmed)) {
-            setCandidates([...candidates, { id: Date.now().toString(), name: trimmed, icon: '🍽️' }]);
-            setInputValue('');
+        if (!trimmed) {
+            return;
         }
+
+        const isDuplicate = candidates.some((candidate) => candidate.name === trimmed);
+        if (isDuplicate) {
+            return;
+        }
+
+        onCandidatesChange([...candidates, { id: Date.now().toString(), name: trimmed, icon: '🍽️' }]);
+        setInputValue('');
     };
 
     const handleRemove = (id: string) => {
-        setCandidates(candidates.filter((c) => c.id !== id));
+        onCandidatesChange(candidates.filter((candidate) => candidate.id !== id));
     };
 
     return (
@@ -105,9 +117,9 @@ export const CandidateInputScreen: React.FC<Props> = ({ onNext, onBack, onHome }
                     animate="show"
                 >
                     <AnimatePresence mode="popLayout">
-                        {candidates.map((c) => (
+                        {candidates.map((candidate) => (
                             <motion.div
-                                key={c.id}
+                                key={candidate.id}
                                 layout
                                 variants={itemVariants}
                                 initial="hidden"
@@ -117,14 +129,14 @@ export const CandidateInputScreen: React.FC<Props> = ({ onNext, onBack, onHome }
                             >
                                 <div className="flex items-center gap-3">
                                     <div className="w-10 h-10 rounded-full bg-[var(--bg-color)] flex items-center justify-center text-lg shadow-inner border border-[var(--border-color)]">
-                                        {c.icon}
+                                        {candidate.icon ?? '🍽️'}
                                     </div>
-                                    <span className="text-base font-bold text-[var(--text-primary)]">{c.name}</span>
+                                    <span className="text-base font-bold text-[var(--text-primary)]">{candidate.name}</span>
                                 </div>
                                 <button
-                                    onClick={() => handleRemove(c.id)}
+                                    onClick={() => handleRemove(candidate.id)}
                                     className="w-9 h-9 rounded-full flex items-center justify-center text-[var(--text-helper)] hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-colors"
-                                    aria-label={`${c.name} 삭제`}
+                                    aria-label={`${candidate.name} 삭제`}
                                 >
                                     <X weight="bold" size={18} />
                                 </button>
