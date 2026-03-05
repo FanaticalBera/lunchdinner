@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+﻿import React, { useMemo, useState } from 'react';
 import { motion, type Variants } from 'framer-motion';
 import { StepHeader } from '../components/common/StepHeader';
 import { ProgressBar } from '../components/common/ProgressBar';
@@ -24,6 +24,7 @@ const TAB_CONFIG: Array<{ key: CriterionKey; label: string }> = [
     { key: 'waitTime', label: '대기' },
 ];
 
+const REQUIRED_SCORE_KEYS: CriterionKey[] = ['taste', 'price', 'distance', 'waitTime'];
 const EMOJIS = ['😞', '😐', '🙂', '😋', '🤩'];
 
 const containerVariants: Variants = {
@@ -46,6 +47,14 @@ export const ScoringBoardScreen: React.FC<Props> = ({
 }) => {
     const [activeTab, setActiveTab] = useState(0);
     const activeCriterion = TAB_CONFIG[activeTab].key;
+
+    const incompleteCandidateCount = useMemo(() => {
+        return candidates.filter((candidate) => {
+            return REQUIRED_SCORE_KEYS.some((key) => typeof scores[candidate.id]?.[key] !== 'number');
+        }).length;
+    }, [candidates, scores]);
+
+    const isReadyToCalculate = candidates.length >= 2 && incompleteCandidateCount === 0;
 
     return (
         <div className="flex-1 flex flex-col bg-[var(--bg-color)] h-[100dvh] relative overflow-hidden">
@@ -156,9 +165,20 @@ export const ScoringBoardScreen: React.FC<Props> = ({
             </motion.div>
 
             <BottomActionBar>
-                <PrimaryButton onClick={onNext} className="w-full">
-                    결과 계산하기
-                </PrimaryButton>
+                <div className="w-full flex flex-col gap-2">
+                    {!isReadyToCalculate && (
+                        <HelperText
+                            message={
+                                candidates.length < 2
+                                    ? '후보를 최소 2개 이상 입력해 주세요.'
+                                    : `아직 ${incompleteCandidateCount}개 후보의 점수가 덜 입력됐어요.`
+                            }
+                        />
+                    )}
+                    <PrimaryButton onClick={onNext} className="w-full" disabled={!isReadyToCalculate}>
+                        결과 계산하기
+                    </PrimaryButton>
+                </div>
             </BottomActionBar>
         </div>
     );

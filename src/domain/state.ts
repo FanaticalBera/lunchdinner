@@ -8,6 +8,7 @@ export interface AppState {
     candidates: Candidate[];
     scores: ScoreMatrix;
     quickTags: QuickTag[];
+    recommendationNonce: number;
 }
 
 export type AppAction =
@@ -18,6 +19,7 @@ export type AppAction =
     | { type: 'SET_CANDIDATES'; candidates: Candidate[] }
     | { type: 'SET_SCORE'; candidateId: string; criterion: CriterionKey; score: number }
     | { type: 'SET_TAGS'; tags: QuickTag[] }
+    | { type: 'REFETCH_RECOMMENDATION' }
     | { type: 'RESET' };
 
 const INITIAL_CANDIDATES: Candidate[] = [
@@ -25,19 +27,26 @@ const INITIAL_CANDIDATES: Candidate[] = [
     { id: '2', name: '옆집 돈까스', icon: '🍱' },
 ];
 
-export const initialAppState: AppState = {
-    currentStep: 'intro',
-    mode: null,
-    flowType: 'quick',
-    weights: {
-        taste: 40,
-        price: 35,
-        distance: 25,
-    },
-    candidates: INITIAL_CANDIDATES,
-    scores: {},
-    quickTags: [],
+const INITIAL_WEIGHTS: Weights = {
+    taste: 40,
+    price: 35,
+    distance: 25,
 };
+
+export function createInitialAppState(): AppState {
+    return {
+        currentStep: 'intro',
+        mode: null,
+        flowType: 'quick',
+        weights: { ...INITIAL_WEIGHTS },
+        candidates: INITIAL_CANDIDATES.map((candidate) => ({ ...candidate })),
+        scores: {},
+        quickTags: [],
+        recommendationNonce: 0,
+    };
+}
+
+export const initialAppState: AppState = createInitialAppState();
 
 const flowToStep: Record<FlowType, Step> = {
     quick: 'quick1',
@@ -69,6 +78,7 @@ export function appReducer(state: AppState, action: AppAction): AppState {
                 ...state,
                 flowType: action.flowType,
                 currentStep: flowToStep[action.flowType],
+                recommendationNonce: 0,
             };
         case 'SET_WEIGHTS':
             return {
@@ -98,15 +108,15 @@ export function appReducer(state: AppState, action: AppAction): AppState {
             return {
                 ...state,
                 quickTags: [...new Set(action.tags)],
+                recommendationNonce: 0,
+            };
+        case 'REFETCH_RECOMMENDATION':
+            return {
+                ...state,
+                recommendationNonce: state.recommendationNonce + 1,
             };
         case 'RESET':
-            return {
-                ...initialAppState,
-                weights: { ...initialAppState.weights },
-                candidates: [...initialAppState.candidates],
-                scores: {},
-                quickTags: [],
-            };
+            return createInitialAppState();
         default:
             return state;
     }

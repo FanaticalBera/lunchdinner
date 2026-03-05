@@ -14,6 +14,7 @@ export interface RankedCandidateTotal extends CandidateTotal {
 export interface MenuItem {
     id: string;
     name: string;
+    icon?: string;
     tags: QuickTag[];
 }
 
@@ -158,7 +159,8 @@ export function scoreMenusByTags(selectedTags: QuickTag[], menus: MenuItem[]): M
 
 export function pickQuickRecommendation(
     selectedTags: QuickTag[],
-    menus: MenuItem[]
+    menus: MenuItem[],
+    randomFn: () => number = Math.random
 ): MenuRecommendation | null {
     if (menus.length === 0) {
         return null;
@@ -167,7 +169,10 @@ export function pickQuickRecommendation(
     const scoredMenus = scoreMenusByTags(selectedTags, menus);
     const topScore = scoredMenus[0]?.matchedTagCount ?? 0;
     const pool = scoredMenus.filter((item) => item.matchedTagCount === topScore);
-    const picked = pool[0] ?? scoredMenus[0];
+
+    const randomValue = safeRandom(randomFn());
+    const index = Math.floor(randomValue * pool.length);
+    const picked = pool[index] ?? scoredMenus[0];
 
     return {
         ...picked,

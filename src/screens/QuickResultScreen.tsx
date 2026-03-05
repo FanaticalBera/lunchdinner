@@ -5,7 +5,8 @@ import { BottomActionBar } from '../components/common/BottomActionBar';
 import { PrimaryButton } from '../components/common/PrimaryButton';
 import { HelperText } from '../components/common/HelperText';
 import { DiceThree, BowlFood, ArrowsLeftRight, Lightning, House } from '@phosphor-icons/react';
-import type { QuickFlowType } from '../domain/types';
+import type { MenuItem } from '../domain/recommendation';
+import type { QuickFlowType, QuickTag } from '../domain/types';
 
 interface Props {
     onRestart: () => void;
@@ -13,28 +14,75 @@ interface Props {
     onSelectFlow: () => void;
     flowType?: QuickFlowType;
     onHome?: () => void;
+    menu: MenuItem | null;
+    selectedTags: QuickTag[];
+    matchedTags: QuickTag[];
+    candidatePoolSize?: number;
 }
 
-export const QuickResultScreen: React.FC<Props> = ({ onRestart, onRefetch, onSelectFlow, flowType = 'quick', onHome }) => {
+function buildHelperMessage(
+    flowType: QuickFlowType,
+    selectedTags: QuickTag[],
+    matchedTags: QuickTag[],
+    candidatePoolSize: number
+): string {
+    if (flowType === 'random') {
+        if (selectedTags.length > 0 && matchedTags.length > 0) {
+            return `선택 태그 ${matchedTags.join(', ')}와(과) 맞는 메뉴에서 랜덤 추첨했어요.`;
+        }
+        if (selectedTags.length > 0) {
+            return '선택한 태그와 맞는 메뉴가 없어 전체 메뉴에서 랜덤 추첨했어요.';
+        }
+        return '태그 없이 전체 메뉴에서 랜덤으로 골랐어요.';
+    }
+
+    if (matchedTags.length > 0) {
+        return `태그 ${matchedTags.join(', ')} 기준으로 상위 ${candidatePoolSize}개 후보 중 추천했어요.`;
+    }
+
+    return '선택한 태그와 정확히 맞는 항목이 없어 전체 메뉴에서 추천했어요.';
+}
+
+export const QuickResultScreen: React.FC<Props> = ({
+    onRestart,
+    onRefetch,
+    onSelectFlow,
+    flowType = 'quick',
+    onHome,
+    menu,
+    selectedTags,
+    matchedTags,
+    candidatePoolSize = 1,
+}) => {
     const [loading, setLoading] = useState(true);
     const [retryCount, setRetryCount] = useState(0);
 
     const handleRestartClick = () => {
+        setRetryCount((count) => count + 1);
         setLoading(true);
-        setRetryCount((c) => c + 1);
-        if (flowType === 'quick') {
-            onRefetch();
-        }
+        onRefetch();
     };
 
     useEffect(() => {
-        if (loading) {
-            const timer = setTimeout(() => {
-                setLoading(false);
-            }, 1800);
-            return () => clearTimeout(timer);
+        setLoading(true);
+    }, [menu?.id, flowType]);
+
+    useEffect(() => {
+        if (!loading) {
+            return;
         }
+
+        const timer = setTimeout(() => {
+            setLoading(false);
+        }, 900);
+
+        return () => clearTimeout(timer);
     }, [loading]);
+
+    const menuName = menu?.name ?? '추천 메뉴 없음';
+    const menuIcon = menu?.icon ?? '🍽️';
+    const helperMessage = buildHelperMessage(flowType, selectedTags, matchedTags, candidatePoolSize);
+    const noMatchFallback = selectedTags.length > 0 && matchedTags.length === 0;
 
     return (
         <div className="flex-1 flex flex-col bg-[var(--bg-color)] h-[100dvh] relative overflow-hidden">
@@ -71,10 +119,10 @@ export const QuickResultScreen: React.FC<Props> = ({ onRestart, onRefetch, onSel
                             </motion.div>
                             <h2 className="text-xl font-display font-semibold text-[var(--text-primary)] tracking-tight mb-2">
                                 {flowType === 'random' && retryCount > 0
-                                    ? '다시 주사위를 굴리며 찾는 중...'
+                                    ? '다시 주사위를 굴리는 중...'
                                     : '딱 맞는 메뉴 찾는 중...'}
                             </h2>
-                            <HelperText message={flowType === 'random' && retryCount > 0 ? '이번엔 뭐가 나올까요?' : '선택한 조건을 빠르게 분석하고 있어요.'} />
+                            <HelperText message={flowType === 'random' ? '랜덤 추첨으로 메뉴를 고르고 있어요.' : '선택한 태그를 기준으로 빠르게 추천 중이에요.'} />
                         </motion.div>
                     ) : (
                         <motion.div
@@ -101,15 +149,45 @@ export const QuickResultScreen: React.FC<Props> = ({ onRestart, onRefetch, onSel
                                         transition={{ type: 'spring', stiffness: 200, damping: 15, delay: 0.2 }}
                                         className="w-24 h-24 bg-amber-50 dark:bg-amber-500/10 rounded-3xl flex items-center justify-center text-amber-500 mb-6 shadow-inner border border-amber-500/20"
                                     >
-                                        <BowlFood weight="fill" size={52} />
+                                        {menu ? (
+                                            <span className="text-5xl leading-none">{menuIcon}</span>
+                                        ) : (
+                                            <BowlFood weight="fill" size={52} />
+                                        )}
                                     </motion.div>
 
                                     <h1 className="text-3xl mb-3 font-bold font-display text-[var(--text-primary)] tracking-tighter leading-tight">
-                                        회덮밥 정식
+                                        {menuName}
                                     </h1>
-                                    <p className="text-[var(--text-secondary)] text-sm font-medium">선택한 태그 조합과 가장 잘 맞는 추천</p>
+                                    <p className="text-[var(--text-secondary)] text-sm font-medium">{helperMessage}</p>
                                 </div>
                             </motion.div>
+
+                            {noMatchFallback && (
+                                <div className="w-full mt-4 p-3 rounded-2xl border border-amber-300/60 bg-amber-50/70 text-amber-800 text-sm font-medium">
+                                    선택 태그와 직접 매칭되는 메뉴가 없어 전체 메뉴에서 대체 추천했어요.
+                                </div>
+                            )}
+
+                            {selectedTags.length > 0 && (
+                                <div className="w-full mt-4 flex flex-wrap gap-2 justify-center">
+                                    {selectedTags.slice(0, 6).map((tag) => {
+                                        const isMatched = matchedTags.includes(tag);
+                                        return (
+                                            <span
+                                                key={tag}
+                                                className={`px-3 py-1.5 rounded-full text-xs font-semibold border ${
+                                                    isMatched
+                                                        ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/30'
+                                                        : 'bg-[var(--surface-color)] text-[var(--text-helper)] border-[var(--border-color)]'
+                                                }`}
+                                            >
+                                                #{tag}
+                                            </span>
+                                        );
+                                    })}
+                                </div>
+                            )}
                         </motion.div>
                     )}
                 </AnimatePresence>

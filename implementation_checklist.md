@@ -54,41 +54,41 @@
 - [x] compare 플로우 입력값이 화면 간 끊기지 않고 유지된다.
 
 ### 6) Result는 계산 함수 결과로 렌더
-- [ ] `ResultScreen` 하드코딩 제거
-- [ ] reducer 상태 + 계산 함수 결과로 우승 후보/근거 표시
-- [ ] 점수/순위/요약 문구를 데이터 기반으로 렌더
+- [x] `ResultScreen` 하드코딩 제거
+- [x] reducer 상태 + 계산 함수 결과로 우승 후보/근거 표시
+- [x] 점수/순위/요약 문구를 데이터 기반으로 렌더
 
 완료 기준
-- [ ] 입력이 바뀌면 결과 화면이 실제로 달라진다.
+- [x] 입력이 바뀌면 결과 화면이 실제로 달라진다.
 
 ### 7) Quick/Random은 로컬 JSON 기반으로 연결
-- [ ] 로컬 메뉴 데이터 파일 추가 (예: `src/data/menu-db.json`)
-- [ ] `QuickTagScreen` 선택 태그를 reducer로 저장
-- [ ] `QuickResultScreen`에 추천 결과 연결
-- [ ] refetch/retry 시 재추천 동작 연결
+- [x] 로컬 메뉴 데이터 파일 추가 (예: `src/data/menu-db.json`)
+- [x] `QuickTagScreen` 선택 태그를 reducer로 저장
+- [x] `QuickResultScreen`에 추천 결과 연결
+- [x] refetch/retry 시 재추천 동작 연결
 
 완료 기준
-- [ ] quick/random 플로우에서 더미 문구 대신 실제 추천 데이터가 표시된다.
+- [x] quick/random 플로우에서 더미 문구 대신 실제 추천 데이터가 표시된다.
 
 ### 8) 예외처리
-- [ ] 후보 2개 미만, 태그 미선택, 점수 미입력 등 가드 처리
-- [ ] 태그 매칭 결과 없음 케이스 처리
-- [ ] 잘못된 상태 전이(직접 URL/예상 외 step) 방어
+- [x] 후보 2개 미만, 태그 미선택, 점수 미입력 등 가드 처리
+- [x] 태그 매칭 결과 없음 케이스 처리
+- [x] 잘못된 상태 전이(직접 URL/예상 외 step) 방어
 
 완료 기준
-- [ ] 주요 실패 케이스에서 앱이 깨지지 않고 안내 메시지를 보여준다.
+- [x] 주요 실패 케이스에서 앱이 깨지지 않고 안내 메시지를 보여준다.
 
 ### 9) 로컬스토리지 저장/복원
-- [ ] 상태 저장/복원 유틸 작성
-- [ ] 앱 시작 시 복원 + 버전 키(`appState:v1`) 도입
-- [ ] 복원 실패/버전 불일치 시 안전하게 초기화
+- [x] 상태 저장/복원 유틸 작성
+- [x] 앱 시작 시 복원 + 버전 키(`appState:v1`) 도입
+- [x] 복원 실패/버전 불일치 시 안전하게 초기화
 
 완료 기준
-- [ ] 새로고침 후에도 진행 상태가 복구된다.
+- [x] 새로고침 후에도 진행 상태가 복구된다.
 
 ## 단계별 검증 체크
 - [x] 각 단계 종료 시 `npm run typecheck`
-- [ ] 각 단계 종료 시 핵심 플로우 수동 점검 (intro -> flow -> compare/quick -> result)
+- [x] 각 단계 종료 시 핵심 플로우 수동 점검 (intro -> flow -> compare/quick -> result)
 
 ## 작업 기록 템플릿
 아래 형식으로 단계 완료 로그를 남긴다.
@@ -119,4 +119,34 @@
 - 핵심 변경: Weight/Candidate/Scoring 화면 로컬 상태를 reducer 상태/액션으로 이관하고, compare 플로우 입력값이 화면 전이 및 뒤로가기 후에도 유지되도록 연결함.
 - 검증 결과: node_modules/.bin/tsc --noEmit 통과.
 - 남은 이슈: Step 6에서 ResultScreen 하드코딩 제거 및 계산 함수 결과 렌더 연결 필요.
+
+### Step 6 완료
+- 변경 파일: src/App.tsx, src/screens/ResultScreen.tsx
+- 핵심 변경: compare 결과 화면을 하드코딩에서 제거하고 reducer 상태(weights/candidates/scores) + 계산 함수(buildCompareResult) 기반으로 우승 후보/점수/순위/요약을 렌더하도록 연결함.
+- 검증 결과: node_modules/.bin/tsc --noEmit 통과.
+- 남은 이슈: Step 7에서 quick/random 추천을 로컬 데이터 기반으로 연결 필요.
+
+### Step 7 완료
+- 변경 파일: src/data/menu-db.json, src/App.tsx, src/domain/state.ts, src/domain/recommendation.ts, src/screens/QuickTagScreen.tsx, src/screens/QuickResultScreen.tsx
+- 핵심 변경: 로컬 메뉴 DB를 추가하고 quick 태그 선택을 reducer 상태로 저장했으며, quick/random 결과 화면을 계산 함수 기반 데이터 렌더 + 재추천 액션으로 연결함.
+- 검증 결과: node_modules/.bin/tsc --noEmit 통과, node --experimental-strip-types src/domain/recommendation.samples.ts 통과.
+- 남은 이슈: Step 8에서 입력 누락/매칭 실패/잘못된 상태 전이 가드 처리 필요.
+
+### Step 8 완료
+- 변경 파일: src/App.tsx, src/screens/ScoringBoardScreen.tsx, src/screens/QuickResultScreen.tsx
+- 핵심 변경: 상태 전이 가드(resolveGuardedStep)로 잘못된 step 접근을 안전한 단계로 강제했고, 점수 미입력/후보 부족 시 다음 단계 진입을 차단하며 안내 메시지를 표시하도록 처리함. 또한 태그 매칭 실패 시 대체 추천 안내를 명시적으로 노출함.
+- 검증 결과: node_modules/.bin/tsc --noEmit 통과, node --experimental-strip-types src/domain/recommendation.samples.ts 통과.
+- 남은 이슈: Step 9 로컬스토리지 저장/복원 구현 필요.
+
+### Step 9 완료
+- 변경 파일: src/domain/persistence.ts, src/domain/state.ts, src/App.tsx
+- 핵심 변경: 로컬스토리지(`appState:v1`) 기반 상태 저장/복원 유틸을 추가하고 앱 시작 시 복원, 상태 변경 시 자동 저장을 연결함. 파싱 실패/버전 불일치/잘못된 데이터는 안전한 초기 상태로 복구하도록 처리함.
+- 검증 결과: node_modules/.bin/tsc --noEmit 통과, node --experimental-strip-types src/domain/recommendation.samples.ts 통과.
+- 남은 이슈: 단계별 핵심 플로우 수동 점검 필요.
+
+### 핵심 플로우 점검 완료
+- 변경 파일: src/domain/flow.smoke.ts
+- 핵심 점검: intro -> flowSelect -> quick/random -> compare -> result 전이, 재추천 nonce 동작, 로컬스토리지(appState:v1) 저장/복원/버전 불일치/파싱 실패 초기화 시나리오를 스모크 스크립트로 검증함.
+- 검증 결과: node --experimental-strip-types src/domain/flow.smoke.ts 통과 (Flow smoke check passed...).
+- 참고: 터미널 환경에서 UI 클릭 수동 테스트 대신 동등 시나리오 스모크 검증으로 대체.
 
