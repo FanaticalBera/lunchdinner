@@ -1,0 +1,17 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90mD:/lunchdinner[39m
+
+ [32m✓[39m src/domain/recommendation.test.ts[2m > [22mrecommendation domain[2m > [22mcalculates weighted totals[32m 2[2mms[22m[39m
+ [32m✓[39m src/domain/recommendation.test.ts[2m > [22mrecommendation domain[2m > [22mranks ties correctly[32m 9[2mms[22m[39m
+ [32m✓[39m src/domain/recommendation.test.ts[2m > [22mrecommendation domain[2m > [22mbuilds compare result winner[32m 0[2mms[22m[39m
+ [32m✓[39m src/domain/recommendation.test.ts[2m > [22mrecommendation domain[2m > [22mpicks quick recommendation from best matched menu[32m 1[2mms[22m[39m
+ [32m✓[39m src/domain/recommendation.test.ts[2m > [22mrecommendation domain[2m > [22mpicks random recommendation from tag pool or fallback pool[32m 0[2mms[22m[39m
+ [32m✓[39m src/domain/flow.smoke.test.ts[2m > [22mflow smoke[2m > [22mpasses intro -> quick/random path with recommendation refresh[32m 11[2mms[22m[39m
+ [32m✓[39m src/domain/flow.smoke.test.ts[2m > [22mflow smoke[2m > [22mpasses compare path and computes ranking[32m 1[2mms[22m[39m
+ [32m✓[39m src/domain/flow.smoke.test.ts[2m > [22mflow smoke[2m > [22msaves/restores state and handles invalid storage payloads[32m 1[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m2 passed[39m[22m[90m (2)[39m
+[2m      Tests [22m [1m[32m8 passed[39m[22m[90m (8)[39m
+[2m   Start at [22m 18:00:15
+[2m   Duration [22m 389ms[2m (transform 98ms, setup 0ms, import 188ms, tests 27ms, environment 0ms)[22m
+
