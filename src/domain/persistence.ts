@@ -17,7 +17,7 @@ const STEP_SET: Set<Step> = new Set([
 
 const MODE_SET: Set<Mode> = new Set(['lunch', 'dinner']);
 const FLOW_SET: Set<FlowType> = new Set(['quick', 'compare', 'random']);
-const CRITERION_SET: Set<CriterionKey> = new Set(['taste', 'price', 'distance', 'waitTime']);
+const CRITERION_SET: Set<CriterionKey> = new Set(['taste', 'price', 'distance']);
 
 interface PersistedEnvelope {
     version: number;
@@ -205,4 +205,6 @@ export function saveAppState(state: AppState): void {
         // Ignore storage errors and keep in-memory state.
     }
 }
+
+
 

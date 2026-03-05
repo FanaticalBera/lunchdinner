@@ -20,8 +20,8 @@ import {
 import type { Candidate, CriterionKey, FlowType, Mode, QuickTag, Step, Weights } from './domain/types';
 import menuDbRaw from './data/menu-db.json';
 
-const MENU_DB: MenuItem[] = menuDbRaw;
-const REQUIRED_SCORE_KEYS: CriterionKey[] = ['taste', 'price', 'distance', 'waitTime'];
+const MENU_DB = menuDbRaw as MenuItem[];
+const REQUIRED_SCORE_KEYS: CriterionKey[] = ['taste', 'price', 'distance'];
 
 function hasCompleteScores(candidates: Candidate[], scores: AppState['scores']): boolean {
     if (candidates.length < 2) {
@@ -34,6 +34,15 @@ function hasCompleteScores(candidates: Candidate[], scores: AppState['scores']):
             return typeof score === 'number';
         })
     );
+}
+
+function isMenuAvailableForMode(menu: MenuItem, mode: Mode | null): boolean {
+    if (!mode) {
+        return true;
+    }
+
+    const mealType = menu.mealType ?? 'both';
+    return mealType === 'both' || mealType === mode;
 }
 
 function resolveGuardedStep(state: AppState): Step {
@@ -121,17 +130,21 @@ function App() {
         saveAppState(state);
     }, [state]);
 
+    const menusForMode = useMemo(() => {
+        return MENU_DB.filter((menu) => isMenuAvailableForMode(menu, mode));
+    }, [mode]);
+
     const availableQuickTags = useMemo(() => {
-        return [...new Set(MENU_DB.flatMap((menu) => menu.tags))].sort((a, b) => a.localeCompare(b, 'ko'));
-    }, []);
+        return [...new Set(menusForMode.flatMap((menu) => menu.tags))].sort((a, b) => a.localeCompare(b, 'ko'));
+    }, [menusForMode]);
 
     const quickRecommendation = useMemo(() => {
-        return pickQuickRecommendation(quickTags, MENU_DB, Math.random);
-    }, [quickTags, recommendationNonce]);
+        return pickQuickRecommendation(quickTags, menusForMode, Math.random);
+    }, [quickTags, menusForMode, recommendationNonce]);
 
     const randomRecommendation = useMemo(() => {
-        return pickRandomRecommendation(quickTags, MENU_DB, Math.random);
-    }, [quickTags, recommendationNonce]);
+        return pickRandomRecommendation(quickTags, menusForMode, Math.random);
+    }, [quickTags, menusForMode, recommendationNonce]);
 
     const randomMatchedTags = useMemo(() => {
         if (!randomRecommendation) {
@@ -275,3 +288,5 @@ function App() {
 }
 
 export default App;
+
+

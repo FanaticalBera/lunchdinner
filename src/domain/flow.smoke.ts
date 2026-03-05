@@ -36,14 +36,14 @@ function assertEqual<T>(actual: T, expected: T, message: string): void {
 }
 
 const FLOW_TEST_MENUS: MenuItem[] = [
-    { id: 'm1', name: '김치찌개', icon: '🍲', tags: ['국물', '매운맛', '한식'] },
-    { id: 'm2', name: '돈까스', icon: '🍛', tags: ['고기', '가성비', '양식'] },
-    { id: 'm3', name: '우동', icon: '🍜', tags: ['국물', '가벼운', '일식'] },
-    { id: 'm4', name: '샐러드', icon: '🥗', tags: ['가벼운', '건강한'] },
+    { id: 'm1', name: '김치찌개', tags: ['국물', '매운맛', '한식'] },
+    { id: 'm2', name: '돈까스', tags: ['고기', '가성비', '양식'] },
+    { id: 'm3', name: '우동', tags: ['국물', '가벼운', '일식'] },
+    { id: 'm4', name: '샐러드', tags: ['가벼운', '건강한'] },
 ];
 
 function setAllScores(state: AppState, score: number): AppState {
-    const keys: CriterionKey[] = ['taste', 'price', 'distance', 'waitTime'];
+    const keys: CriterionKey[] = ['taste', 'price', 'distance'];
     let next = state;
 
     state.candidates.forEach((candidate) => {
@@ -104,9 +104,9 @@ function runCompareFlowCheck(): void {
     state = appReducer(state, {
         type: 'SET_CANDIDATES',
         candidates: [
-            { id: 'a', name: '김치찌개', icon: '🍲' },
-            { id: 'b', name: '돈까스', icon: '🍛' },
-            { id: 'c', name: '우동', icon: '🍜' },
+            { id: 'a', name: '김치찌개' },
+            { id: 'b', name: '돈까스' },
+            { id: 'c', name: '우동' },
         ],
     });
 
@@ -156,3 +156,7 @@ function runFlowSmoke(): void {
 
 runFlowSmoke();
 console.log('Flow smoke check passed: intro -> flow -> quick/compare -> result + persistence restore');
+
+
+
+

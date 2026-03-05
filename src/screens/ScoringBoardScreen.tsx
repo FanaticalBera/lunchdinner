@@ -21,10 +21,9 @@ const TAB_CONFIG: Array<{ key: CriterionKey; label: string }> = [
     { key: 'taste', label: '맛' },
     { key: 'price', label: '가성비' },
     { key: 'distance', label: '거리' },
-    { key: 'waitTime', label: '대기' },
 ];
 
-const REQUIRED_SCORE_KEYS: CriterionKey[] = ['taste', 'price', 'distance', 'waitTime'];
+const REQUIRED_SCORE_KEYS: CriterionKey[] = ['taste', 'price', 'distance'];
 const EMOJIS = ['😞', '😐', '🙂', '😋', '🤩'];
 
 const containerVariants: Variants = {
