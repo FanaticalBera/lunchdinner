@@ -13,7 +13,7 @@ export type Step =
     | 'compare3'
     | 'compare4';
 
-export type CriterionKey = 'taste' | 'price' | 'distance' | 'waitTime';
+export type CriterionKey = 'taste' | 'price' | 'distance';
 
 export interface Weights {
     taste: number;
@@ -42,3 +42,5 @@ export interface Result {
     }>;
     reason: string;
 }
+
+

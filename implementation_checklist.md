@@ -150,3 +150,49 @@
 - 검증 결과: node --experimental-strip-types src/domain/flow.smoke.ts 통과 (Flow smoke check passed...).
 - 참고: 터미널 환경에서 UI 클릭 수동 테스트 대신 동등 시나리오 스모크 검증으로 대체.
 
+
+## 다음 단계 체크리스트 (waitTime 제거 이후)
+
+### A) mode(점심/저녁)를 추천에 반영 (우선순위 높음)
+- [x] `menu-db.json`에 `mealType`(`lunch` | `dinner` | `both`) 필드 추가
+- [x] mode에 따라 추천 대상 메뉴 풀 필터링
+- [x] mode에 따라 quick 태그 목록도 필터링
+- [x] 모드별 결과 차이 확인 (점심/저녁 동일 태그 비교)
+
+완료 기준
+- [x] 같은 태그를 선택해도 `mode`가 다르면 후보 풀이 실제로 달라진다.
+
+### B) Vitest 도입 (우선순위 중간)
+- [x] `vitest` + `@vitest/coverage-v8`(선택) 설치
+- [x] `package.json`에 `test`, `test:watch` 스크립트 추가
+- [x] `recommendation.samples.ts`, `flow.smoke.ts` 시나리오를 Vitest 테스트 파일(`*.test.ts`)로 이전
+- [x] CI에서 `npm run test` 실행 가능하게 구성
+
+완료 기준
+- [x] `npm run test` 한 번으로 핵심 도메인 테스트가 실행된다.
+
+### C) 메뉴 데이터 확장 (우선순위 중간)
+- [ ] `menu-db.json` 메뉴 수 확장 (태그 희소 구간 보강)
+- [ ] 태그 분포 점검 (특정 태그 후보 1~2개 문제 완화)
+- [ ] mode별 최소 후보 개수 가이드 정의
+
+완료 기준
+- [ ] 주요 태그 조합에서 추천 후보 풀이 과도하게 좁아지지 않는다.
+
+### D) WinnerCard 공용 컴포넌트 추출 (우선순위 낮음)
+- [ ] `QuickResultScreen`/`ResultScreen` 공통 위너 카드 UI 추출
+- [ ] 공통 props 인터페이스 설계
+- [ ] 화면별 차이 요소만 슬롯/옵션으로 분리
+
+완료 기준
+- [ ] 위너 카드 레이아웃 중복이 제거되고 화면 동작이 동일하다.
+
+### E) Error Boundary 추가 (우선순위 낮음)
+- [ ] 앱 루트 에러 바운더리 컴포넌트 추가
+- [ ] 런타임 에러 시 복구 액션(홈으로/다시 시작) 제공
+- [ ] 기본 로깅 포인트 추가
+
+완료 기준
+- [ ] 렌더 단계 예외 발생 시 화이트스크린 대신 복구 가능한 fallback이 뜬다.
+
+

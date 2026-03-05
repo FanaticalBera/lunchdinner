@@ -1,4 +1,4 @@
-﻿import type { Candidate, QuickTag, Result, ScoreMatrix, Weights } from './types';
+﻿import type { Candidate, Mode, QuickTag, Result, ScoreMatrix, Weights } from './types';
 
 export interface CandidateTotal {
     candidateId: Candidate['id'];
@@ -11,11 +11,14 @@ export interface RankedCandidateTotal extends CandidateTotal {
     isTie: boolean;
 }
 
+export type MealType = Mode | 'both';
+
 export interface MenuItem {
     id: string;
     name: string;
     icon?: string;
     tags: QuickTag[];
+    mealType?: MealType;
 }
 
 export interface MenuRecommendation {
@@ -194,9 +197,9 @@ export function pickRandomRecommendation(
         normalizedSelectedTags.length === 0
             ? menus
             : menus.filter((menu) => {
-                  const menuTags = uniqueNormalizedTags(menu.tags);
-                  return normalizedSelectedTags.some((tag) => menuTags.includes(tag));
-              });
+                const menuTags = uniqueNormalizedTags(menu.tags);
+                return normalizedSelectedTags.some((tag) => menuTags.includes(tag));
+            });
 
     const pool = matchedPool.length > 0 ? matchedPool : menus;
     const randomValue = safeRandom(randomFn());
