@@ -1,10 +1,13 @@
-import React from 'react';
+﻿import React from 'react';
 import { motion, type Variants } from 'framer-motion';
 import { BottomActionBar } from '../components/common/BottomActionBar';
 import { PrimaryButton } from '../components/common/PrimaryButton';
 import { MapTrifold, ArrowsClockwise, Crown } from '@phosphor-icons/react';
+import type { Candidate, Result } from '../domain/types';
 
 interface Props {
+    result: Result | null;
+    candidates: Candidate[];
     onRestart: () => void;
     onReWeight: () => void;
 }
@@ -22,7 +25,21 @@ const itemVariants: Variants = {
     show: { opacity: 1, scale: 1, y: 0, transition: { type: 'spring', stiffness: 100, damping: 15 } }
 };
 
-export const ResultScreen: React.FC<Props> = ({ onRestart, onReWeight }) => {
+function getWinnerIcon(result: Result | null, candidates: Candidate[]): string {
+    if (!result) {
+        return '🍽️';
+    }
+
+    const winner = candidates.find((candidate) => candidate.id === result.winnerId);
+    return winner?.icon ?? '🍽️';
+}
+
+export const ResultScreen: React.FC<Props> = ({ result, candidates, onRestart, onReWeight }) => {
+    const winnerIcon = getWinnerIcon(result, candidates);
+    const tieCount = result
+        ? result.ranking.filter((item) => item.score === result.totalScore).length
+        : 0;
+
     return (
         <div className="flex-1 flex flex-col bg-[var(--bg-color)] h-[100dvh] relative overflow-hidden">
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-emerald-500/10 dark:bg-indigo-500/10 blur-[100px] rounded-full pointer-events-none -translate-y-1/2" />
@@ -64,28 +81,49 @@ export const ResultScreen: React.FC<Props> = ({ onRestart, onReWeight }) => {
                                 animate={{ scale: 1, rotate: 0 }}
                                 transition={{ type: 'spring', stiffness: 200, damping: 15, delay: 0.5 }}
                             >
-                                🏆
+                                {winnerIcon}
                             </motion.span>
                         </div>
 
-                        <h1 className="text-2xl mb-6 font-display font-bold text-[var(--text-primary)] tracking-tight leading-tight">
-                            김치찌개 전문점
-                        </h1>
+                        {result ? (
+                            <>
+                                <h1 className="text-2xl mb-6 font-display font-bold text-[var(--text-primary)] tracking-tight leading-tight">
+                                    {result.winnerName}
+                                </h1>
 
-                        <div className="w-full bg-[var(--bg-color)] rounded-2xl p-4 text-sm leading-relaxed text-[var(--text-secondary)] font-medium border border-[var(--border-color)] flex flex-col gap-2.5 text-left shadow-inner">
-                            <div className="flex justify-between items-center border-b border-[var(--border-color)] pb-2.5">
-                                <span className="text-[var(--text-helper)]">종합 점수</span>
-                                <strong className="text-emerald-500 dark:text-indigo-400 text-xl font-display font-bold tracking-tight">88점</strong>
+                                <div className="w-full bg-[var(--bg-color)] rounded-2xl p-4 text-sm leading-relaxed text-[var(--text-secondary)] font-medium border border-[var(--border-color)] flex flex-col gap-2.5 text-left shadow-inner">
+                                    <div className="flex justify-between items-center border-b border-[var(--border-color)] pb-2.5">
+                                        <span className="text-[var(--text-helper)]">종합 점수</span>
+                                        <strong className="text-emerald-500 dark:text-indigo-400 text-xl font-display font-bold tracking-tight">
+                                            {result.totalScore.toFixed(2)}점
+                                        </strong>
+                                    </div>
+                                    <div className="flex justify-between items-center pt-0.5">
+                                        <span className="text-[var(--text-helper)]">순위</span>
+                                        <strong className="text-[var(--text-primary)] text-sm">
+                                            {tieCount > 1 ? `공동 1위 (${tieCount}개 후보)` : `${result.ranking.length}개 후보 중 1위`}
+                                        </strong>
+                                    </div>
+                                    <div className="flex flex-col gap-1 pt-1.5 border-t border-[var(--border-color)]">
+                                        <span className="text-[var(--text-helper)]">요약</span>
+                                        <strong className="text-[var(--text-primary)] text-sm">{result.reason}</strong>
+                                    </div>
+                                </div>
+
+                                <div className="w-full mt-4 rounded-2xl border border-[var(--border-color)] bg-[var(--bg-color)] p-3 flex flex-col gap-2 text-left">
+                                    {result.ranking.slice(0, 3).map((item, index) => (
+                                        <div key={item.candidateId} className="flex items-center justify-between text-sm">
+                                            <span className="text-[var(--text-secondary)]">{index + 1}. {item.candidateName}</span>
+                                            <strong className="text-[var(--text-primary)]">{item.score.toFixed(2)}점</strong>
+                                        </div>
+                                    ))}
+                                </div>
+                            </>
+                        ) : (
+                            <div className="w-full bg-[var(--bg-color)] rounded-2xl p-4 text-sm leading-relaxed text-[var(--text-secondary)] font-medium border border-[var(--border-color)] text-left shadow-inner">
+                                결과를 계산할 데이터가 부족해요. 가중치/후보/점수를 먼저 입력해 주세요.
                             </div>
-                            <div className="flex justify-between items-center pt-0.5">
-                                <span className="text-[var(--text-helper)]">맛 평가</span>
-                                <strong className="text-[var(--text-primary)] text-sm">후보 중 1위</strong>
-                            </div>
-                            <div className="flex justify-between items-center">
-                                <span className="text-[var(--text-helper)]">거리</span>
-                                <strong className="text-[var(--text-primary)] text-sm">도보 5분 소요</strong>
-                            </div>
-                        </div>
+                        )}
                     </div>
                 </motion.div>
             </motion.div>
@@ -98,7 +136,7 @@ export const ResultScreen: React.FC<Props> = ({ onRestart, onReWeight }) => {
                         variant="secondary"
                     >
                         <MapTrifold weight="fill" size={18} className="text-emerald-500" />
-                        <span>기준 다시 정하기</span>
+                        <span>가중치 다시 정하기</span>
                     </PrimaryButton>
                     <PrimaryButton
                         onClick={onRestart}

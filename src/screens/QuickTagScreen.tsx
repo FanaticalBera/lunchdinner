@@ -1,23 +1,20 @@
-import React, { useState } from 'react';
+﻿import React from 'react';
 import { motion, type Variants } from 'framer-motion';
 import { StepHeader } from '../components/common/StepHeader';
 import { ProgressBar } from '../components/common/ProgressBar';
 import { BottomActionBar } from '../components/common/BottomActionBar';
 import { PrimaryButton } from '../components/common/PrimaryButton';
 import { Check } from '@phosphor-icons/react';
+import type { QuickTag } from '../domain/types';
 
 interface Props {
+    tags: QuickTag[];
+    selectedTags: QuickTag[];
+    onTagsChange: (tags: QuickTag[]) => void;
     onNext: () => void;
     onBack: () => void;
     onHome?: () => void;
 }
-
-const DUMMY_TAGS = [
-    '국밥', '면', '고기', '해산물',
-    '매운맛', '담백한', '든든한',
-    '밥', '샐러드', '패스트푸드',
-    '건강식', '가벼운', '분식'
-];
 
 const containerVariants: Variants = {
     hidden: { opacity: 0 },
@@ -32,17 +29,19 @@ const itemVariants: Variants = {
     show: { opacity: 1, scale: 1, y: 0, transition: { type: 'spring', stiffness: 200, damping: 20 } }
 };
 
-export const QuickTagScreen: React.FC<Props> = ({ onNext, onBack, onHome }) => {
-    const [selectedTags, setSelectedTags] = useState<Set<string>>(new Set());
+export const QuickTagScreen: React.FC<Props> = ({ tags, selectedTags, onTagsChange, onNext, onBack, onHome }) => {
+    const selectedSet = new Set(selectedTags);
 
     const toggleTag = (tag: string) => {
-        const newTags = new Set(selectedTags);
-        if (newTags.has(tag)) {
-            newTags.delete(tag);
+        const nextSet = new Set(selectedSet);
+
+        if (nextSet.has(tag)) {
+            nextSet.delete(tag);
         } else {
-            newTags.add(tag);
+            nextSet.add(tag);
         }
-        setSelectedTags(newTags);
+
+        onTagsChange(Array.from(nextSet));
     };
 
     return (
@@ -65,7 +64,7 @@ export const QuickTagScreen: React.FC<Props> = ({ onNext, onBack, onHome }) => {
                         분위기로 갈까요?
                     </h2>
                     <p className="text-sm font-medium text-[var(--text-secondary)]">
-                        자유롭게 여러 개를 선택해도 괜찮아요.
+                        여러 개를 골라도 괜찮아요.
                     </p>
                 </motion.div>
 
@@ -75,8 +74,8 @@ export const QuickTagScreen: React.FC<Props> = ({ onNext, onBack, onHome }) => {
                     initial="hidden"
                     animate="show"
                 >
-                    {DUMMY_TAGS.map((tag) => {
-                        const isSelected = selectedTags.has(tag);
+                    {tags.map((tag) => {
+                        const isSelected = selectedSet.has(tag);
                         return (
                             <motion.button
                                 variants={itemVariants}
@@ -112,11 +111,11 @@ export const QuickTagScreen: React.FC<Props> = ({ onNext, onBack, onHome }) => {
             <BottomActionBar>
                 <PrimaryButton
                     onClick={onNext}
-                    disabled={selectedTags.size === 0}
+                    disabled={selectedTags.length === 0}
                     className="w-full flex items-center justify-center"
                 >
-                    {selectedTags.size > 0
-                        ? `${selectedTags.size}개 태그로 추천받기`
+                    {selectedTags.length > 0
+                        ? `${selectedTags.length}개 태그로 추천받기`
                         : '먼저 태그를 골라주세요'}
                 </PrimaryButton>
             </BottomActionBar>
