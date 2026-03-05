@@ -1,43 +1,34 @@
-﻿import { useState } from 'react'
-import { AppShell } from './components/common/AppShell'
-import { IntroScreen } from './screens/IntroScreen'
-import { FlowSelectScreen } from './screens/FlowSelectScreen'
-import { QuickTagScreen } from './screens/QuickTagScreen'
-import { QuickResultScreen } from './screens/QuickResultScreen'
-import { WeightWizardScreen } from './screens/WeightWizardScreen'
-import { CandidateInputScreen } from './screens/CandidateInputScreen'
-import { ScoringBoardScreen } from './screens/ScoringBoardScreen'
-import { ResultScreen } from './screens/ResultScreen'
-import type { FlowType, Mode, Step } from './domain/types'
+﻿import { useReducer } from 'react';
+import { AppShell } from './components/common/AppShell';
+import { IntroScreen } from './screens/IntroScreen';
+import { FlowSelectScreen } from './screens/FlowSelectScreen';
+import { QuickTagScreen } from './screens/QuickTagScreen';
+import { QuickResultScreen } from './screens/QuickResultScreen';
+import { WeightWizardScreen } from './screens/WeightWizardScreen';
+import { CandidateInputScreen } from './screens/CandidateInputScreen';
+import { ScoringBoardScreen } from './screens/ScoringBoardScreen';
+import { ResultScreen } from './screens/ResultScreen';
+import { appReducer, initialAppState } from './domain/state';
+import type { FlowType, Mode } from './domain/types';
 
 function App() {
-    const [currentStep, setCurrentStep] = useState<Step>('intro');
-    const [mode, setMode] = useState<Mode | null>(null);
-    const [flowType, setFlowType] = useState<FlowType>('quick');
+    const [state, dispatch] = useReducer(appReducer, initialAppState);
+    const { currentStep, mode, flowType } = state;
 
     const handleModeSelect = (selectedMode: Mode) => {
-        setMode(selectedMode);
-        setCurrentStep('flowSelect');
+        dispatch({ type: 'SELECT_MODE', mode: selectedMode });
     };
 
     const handleFlowSelect = (flow: FlowType) => {
-        setFlowType(flow);
-        if (flow === 'quick') {
-            setCurrentStep('quick1');
-        } else if (flow === 'random') {
-            setCurrentStep('quick2');
-        } else {
-            setCurrentStep('compare1');
-        }
+        dispatch({ type: 'SELECT_FLOW', flowType: flow });
     };
 
     const handleRestart = () => {
-        setCurrentStep('intro');
-        setMode(null);
+        dispatch({ type: 'RESET' });
     };
 
     const handleReWeight = () => {
-        setCurrentStep('compare1');
+        dispatch({ type: 'NAVIGATE', step: 'compare1' });
     };
 
     const renderScreen = () => {
@@ -45,38 +36,61 @@ function App() {
             case 'intro':
                 return <IntroScreen onSelectMode={handleModeSelect} />;
             case 'flowSelect':
-                return <FlowSelectScreen onSelectFlow={handleFlowSelect} onBack={() => setCurrentStep('intro')} />;
+                return (
+                    <FlowSelectScreen
+                        onSelectFlow={handleFlowSelect}
+                        onBack={() => dispatch({ type: 'NAVIGATE', step: 'intro' })}
+                    />
+                );
 
-            // Route A: Quick Recommendation
             case 'quick1':
-                return <QuickTagScreen onNext={() => setCurrentStep('quick2')} onBack={() => setCurrentStep('flowSelect')} />;
+                return (
+                    <QuickTagScreen
+                        onNext={() => dispatch({ type: 'NAVIGATE', step: 'quick2' })}
+                        onBack={() => dispatch({ type: 'NAVIGATE', step: 'flowSelect' })}
+                    />
+                );
             case 'quick2':
-                return <QuickResultScreen
-                    flowType={flowType === 'random' ? 'random' : 'quick'}
-                    onRestart={() => setCurrentStep('quick1')}
-                    onRefetch={() => {
-                        // TODO: Implement actual refetching logic later
-                        console.log('Refetching with same tags...');
-                    }}
-                    onSelectFlow={() => {
-                        if (flowType === 'random') {
-                            setFlowType('quick');
-                            setCurrentStep('quick1');
-                        } else {
-                            setFlowType('compare');
-                            setCurrentStep('compare1');
-                        }
-                    }}
-                    onHome={handleRestart}
-                />;
+                return (
+                    <QuickResultScreen
+                        flowType={flowType === 'random' ? 'random' : 'quick'}
+                        onRestart={() => dispatch({ type: 'NAVIGATE', step: 'quick1' })}
+                        onRefetch={() => {
+                            // TODO: Implement actual refetching logic later
+                            console.log('Refetching with same tags...');
+                        }}
+                        onSelectFlow={() => {
+                            if (flowType === 'random') {
+                                dispatch({ type: 'SELECT_FLOW', flowType: 'quick' });
+                            } else {
+                                dispatch({ type: 'SELECT_FLOW', flowType: 'compare' });
+                            }
+                        }}
+                        onHome={handleRestart}
+                    />
+                );
 
-            // Route B: Manual Comparison
             case 'compare1':
-                return <WeightWizardScreen onNext={() => setCurrentStep('compare2')} onBack={() => setCurrentStep('flowSelect')} />;
+                return (
+                    <WeightWizardScreen
+                        onNext={() => dispatch({ type: 'NAVIGATE', step: 'compare2' })}
+                        onBack={() => dispatch({ type: 'NAVIGATE', step: 'flowSelect' })}
+                    />
+                );
             case 'compare2':
-                return <CandidateInputScreen onNext={() => setCurrentStep('compare3')} onBack={() => setCurrentStep('compare1')} />;
+                return (
+                    <CandidateInputScreen
+                        onNext={() => dispatch({ type: 'NAVIGATE', step: 'compare3' })}
+                        onBack={() => dispatch({ type: 'NAVIGATE', step: 'compare1' })}
+                    />
+                );
             case 'compare3':
-                return <ScoringBoardScreen onNext={() => setCurrentStep('compare4')} onBack={() => setCurrentStep('compare2')} />;
+                return (
+                    <ScoringBoardScreen
+                        onNext={() => dispatch({ type: 'NAVIGATE', step: 'compare4' })}
+                        onBack={() => dispatch({ type: 'NAVIGATE', step: 'compare2' })}
+                    />
+                );
             case 'compare4':
                 return <ResultScreen onRestart={handleRestart} onReWeight={handleReWeight} />;
 
@@ -85,12 +99,7 @@ function App() {
         }
     };
 
-    return (
-        <AppShell theme={mode}>
-            {renderScreen()}
-        </AppShell>
-    )
+    return <AppShell theme={mode}>{renderScreen()}</AppShell>;
 }
 
-export default App
-
+export default App;
