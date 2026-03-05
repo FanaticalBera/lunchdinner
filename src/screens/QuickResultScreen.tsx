@@ -4,6 +4,7 @@ import { ProgressBar } from '../components/common/ProgressBar';
 import { BottomActionBar } from '../components/common/BottomActionBar';
 import { PrimaryButton } from '../components/common/PrimaryButton';
 import { HelperText } from '../components/common/HelperText';
+import { WinnerCard } from '../components/common/WinnerCard';
 import { DiceThree, BowlFood, ArrowsLeftRight, Lightning, House } from '@phosphor-icons/react';
 import type { MenuItem } from '../domain/recommendation';
 import type { QuickFlowType, QuickTag } from '../domain/types';
@@ -84,6 +85,19 @@ export const QuickResultScreen: React.FC<Props> = ({
     const helperMessage = buildHelperMessage(flowType, selectedTags, matchedTags, candidatePoolSize);
     const noMatchFallback = selectedTags.length > 0 && matchedTags.length === 0;
 
+    const winnerIcon = menu ? (
+        <motion.span
+            initial={{ scale: 0, rotate: -45 }}
+            animate={{ scale: 1, rotate: 0 }}
+            transition={{ type: 'spring', stiffness: 200, damping: 15, delay: 0.2 }}
+            className="text-5xl leading-none"
+        >
+            {menuIcon}
+        </motion.span>
+    ) : (
+        <BowlFood weight="fill" size={52} />
+    );
+
     return (
         <div className="flex-1 flex flex-col bg-[var(--bg-color)] h-[100dvh] relative overflow-hidden">
             <div className="flex-none bg-[var(--surface-color)] z-20 border-b border-[var(--border-color)] relative">
@@ -136,31 +150,18 @@ export const QuickResultScreen: React.FC<Props> = ({
                                 <h2 className="text-2xl font-display font-semibold text-[var(--text-primary)] tracking-tight drop-shadow-sm">오늘의 메뉴는 바로!</h2>
                             </div>
 
-                            <motion.div
-                                whileHover={{ y: -5 }}
-                                className="bg-[var(--surface-color)] rounded-3xl p-7 text-center shadow-[var(--shadow-md)] w-full border border-[var(--border-color)] relative overflow-hidden group"
-                            >
-                                <div className="absolute inset-0 bg-gradient-to-br from-amber-500/10 via-amber-500/5 to-transparent pointer-events-none" />
-
-                                <div className="relative z-10 flex flex-col items-center pt-2">
-                                    <motion.div
-                                        initial={{ scale: 0, rotate: -45 }}
-                                        animate={{ scale: 1, rotate: 0 }}
-                                        transition={{ type: 'spring', stiffness: 200, damping: 15, delay: 0.2 }}
-                                        className="w-24 h-24 bg-amber-50 dark:bg-amber-500/10 rounded-3xl flex items-center justify-center text-amber-500 mb-6 shadow-inner border border-amber-500/20"
-                                    >
-                                        {menu ? (
-                                            <span className="text-5xl leading-none">{menuIcon}</span>
-                                        ) : (
-                                            <BowlFood weight="fill" size={52} />
-                                        )}
-                                    </motion.div>
-
-                                    <h1 className="text-3xl mb-3 font-bold font-display text-[var(--text-primary)] tracking-tighter leading-tight">
-                                        {menuName}
-                                    </h1>
-                                    <p className="text-[var(--text-secondary)] text-sm font-medium">{helperMessage}</p>
-                                </div>
+                            <motion.div whileHover={{ y: -5 }} className="w-full">
+                                <WinnerCard
+                                    containerClassName="p-7 text-center shadow-[var(--shadow-md)] group"
+                                    overlay={<div className="absolute inset-0 bg-gradient-to-br from-amber-500/10 via-amber-500/5 to-transparent pointer-events-none" />}
+                                    innerClassName="pt-2"
+                                    iconWrapperClassName="w-24 h-24 bg-amber-50 dark:bg-amber-500/10 rounded-3xl flex items-center justify-center text-amber-500 mb-6 shadow-inner border border-amber-500/20"
+                                    icon={winnerIcon}
+                                    title={menuName}
+                                    titleClassName="text-3xl mb-3 font-bold font-display text-[var(--text-primary)] tracking-tighter leading-tight"
+                                    subtitle={helperMessage}
+                                    subtitleClassName="text-[var(--text-secondary)] text-sm font-medium"
+                                />
                             </motion.div>
 
                             {noMatchFallback && (

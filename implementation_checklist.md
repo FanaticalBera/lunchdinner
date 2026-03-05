@@ -180,12 +180,12 @@
 - [x] 주요 태그 조합에서 추천 후보 풀이 과도하게 좁아지지 않는다.
 
 ### D) WinnerCard 공용 컴포넌트 추출 (우선순위 낮음)
-- [ ] `QuickResultScreen`/`ResultScreen` 공통 위너 카드 UI 추출
-- [ ] 공통 props 인터페이스 설계
-- [ ] 화면별 차이 요소만 슬롯/옵션으로 분리
+- [x] `QuickResultScreen`/`ResultScreen` 공통 위너 카드 UI 추출
+- [x] 공통 props 인터페이스 설계 (`WinnerCardProps`)
+- [x] 화면별 차이 요소만 슬롯/옵션으로 분리 (`overlay`/`badge`/`children`)
 
 완료 기준
-- [ ] 위너 카드 레이아웃 중복이 제거되고 화면 동작이 동일하다.
+- [x] 위너 카드 레이아웃 중복이 제거되고 화면 동작이 동일하다.
 
 ### E) Error Boundary 추가 (우선순위 낮음)
 - [ ] 앱 루트 에러 바운더리 컴포넌트 추가
@@ -194,6 +194,7 @@
 
 완료 기준
 - [ ] 렌더 단계 예외 발생 시 화이트스크린 대신 복구 가능한 fallback이 뜬다.
+
 
 
 
