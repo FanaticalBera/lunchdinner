@@ -28,12 +28,12 @@
 - [x] 화면별 임시 타입/중복 타입이 최소화된다.
 
 ### 3) useReducer 도입 (currentStep 포함)
-- [ ] 앱 상태를 reducer로 통합 (`currentStep`, `mode`, `flowType` 포함)
-- [ ] 액션 타입 정의 (`NAVIGATE`, `SET_WEIGHTS`, `SET_CANDIDATES`, `SET_SCORE`, `SET_TAGS`, `RESET` 등)
-- [ ] 초기 상태/리셋 동작 명확화
+- [x] 앱 상태를 reducer로 통합 (`currentStep`, `mode`, `flowType` 포함)
+- [x] 액션 타입 정의 (`NAVIGATE`, `SET_WEIGHTS`, `SET_CANDIDATES`, `SET_SCORE`, `SET_TAGS`, `RESET` 등)
+- [x] 초기 상태/리셋 동작 명확화
 
 완료 기준
-- [ ] 화면 이동/핵심 상태 변경이 reducer 액션으로만 수행된다.
+- [x] 화면 이동/핵심 상태 변경이 reducer 액션으로만 수행된다.
 
 ### 4) 순수 계산 함수 먼저 작성
 - [ ] 비교 플로우 점수 계산 함수 작성 (`weights + scores -> total`)
@@ -101,3 +101,9 @@
 - 남은 이슈:
 ```
 
+
+### Step 3 완료
+- 변경 파일: src/domain/state.ts, src/App.tsx
+- 핵심 변경: 앱 전역 상태를 useReducer로 통합하고, 화면 전이/모드/플로우 변경을 reducer 액션 디스패치로 일원화함.
+- 검증 결과: node_modules/.bin/tsc --noEmit 통과 (npm run typecheck는 로컬 npm 경로 이슈로 실행 불가).
+- 남은 이슈: Step 5에서 Weight/Candidate/Scoring 입력 컴포넌트를 reducer 상태에 직접 연결 필요.
