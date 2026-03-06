@@ -46,7 +46,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({ onSelectMode }) => {
                 <h1 className="text-4xl md:text-5xl font-display font-semibold text-[var(--text-primary)] leading-[1.1] tracking-tighter mb-3">
                     오늘 뭐
                     <br />
-                    고르지?
+                    먹을까?
                 </h1>
 
                 <p className="text-[var(--text-secondary)] text-base max-w-[260px]">

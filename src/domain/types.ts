@@ -8,26 +8,16 @@ export type Step =
     | 'flowSelect'
     | 'quick1'
     | 'quick2'
-    | 'compare1'
     | 'compare2'
-    | 'compare3'
-    | 'compare4';
+    | 'compareResult';
 
 export type CriterionKey = 'taste' | 'price' | 'distance';
-
-export interface Weights {
-    taste: number;
-    price: number;
-    distance: number;
-}
 
 export interface Candidate {
     id: string;
     name: string;
     icon?: string;
 }
-
-export type ScoreMatrix = Record<Candidate['id'], Partial<Record<CriterionKey, number>>>;
 
 export type QuickTag = string;
 

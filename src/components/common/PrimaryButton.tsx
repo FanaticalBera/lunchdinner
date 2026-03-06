@@ -30,7 +30,7 @@ export const PrimaryButton: React.FC<PrimaryButtonProps> = ({
             className={`${baseStyles} ${variants[variant]} ${className}`}
             {...props}
         >
-            <span className="relative z-10">{children}</span>
+            <span className="relative z-10 flex items-center justify-center gap-1.5 w-full">{children}</span>
             {/* Subtle highlight overlay */}
             <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-0 pointer-events-none" />
         </motion.button>

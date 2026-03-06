@@ -8,9 +8,15 @@
     Result,
     ResultRankingItem,
     ResultSummaryTone,
-    ScoreMatrix,
-    Weights,
 } from './types';
+
+export interface Weights {
+    taste: number;
+    price: number;
+    distance: number;
+}
+
+export type ScoreMatrix = Record<Candidate['id'], Partial<Record<CriterionKey, number>>>;
 
 export interface CandidateTotal {
     candidateId: Candidate['id'];

@@ -1,8 +1,7 @@
 ﻿import { describe, expect, it } from 'vitest';
 import { loadAppState, saveAppState } from './persistence';
-import { buildCompareResult, pickQuickRecommendation, pickRandomRecommendation, type MenuItem } from './recommendation';
-import { appReducer, createInitialAppState, type AppState } from './state';
-import type { CriterionKey } from './types';
+import { pickQuickRecommendation, pickRandomRecommendation, type MenuItem } from './recommendation';
+import { appReducer, createInitialAppState } from './state';
 
 class MemoryStorage {
     private data = new Map<string, string>();
@@ -30,24 +29,6 @@ const FLOW_TEST_MENUS: MenuItem[] = [
     { id: 'm3', name: '우동', tags: ['국물', '가벼운', '일식'] },
     { id: 'm4', name: '샐러드', tags: ['가벼운', '건강한'] },
 ];
-
-function setAllScores(state: AppState, score: number): AppState {
-    const keys: CriterionKey[] = ['taste', 'price', 'distance'];
-    let next = state;
-
-    state.candidates.forEach((candidate) => {
-        keys.forEach((key) => {
-            next = appReducer(next, {
-                type: 'SET_SCORE',
-                candidateId: candidate.id,
-                criterion: key,
-                score,
-            });
-        });
-    });
-
-    return next;
-}
 
 describe('flow smoke', () => {
     it('passes intro -> quick/random path with recommendation refresh', () => {
@@ -79,17 +60,12 @@ describe('flow smoke', () => {
         expect(randomResult).not.toBeNull();
     });
 
-    it('passes compare path and computes ranking', () => {
+    it('passes compare path into candidate input -> compare result', () => {
         let state = createInitialAppState();
 
         state = appReducer(state, { type: 'SELECT_MODE', mode: 'dinner' });
         state = appReducer(state, { type: 'SELECT_FLOW', flowType: 'compare' });
-        expect(state.currentStep).toBe('compare1');
-
-        state = appReducer(state, {
-            type: 'SET_WEIGHTS',
-            weights: { taste: 50, price: 30, distance: 20 },
-        });
+        expect(state.currentStep).toBe('compare2');
 
         state = appReducer(state, {
             type: 'SET_CANDIDATES',
@@ -100,11 +76,31 @@ describe('flow smoke', () => {
             ],
         });
 
-        state = setAllScores(state, 4);
+        state = appReducer(state, { type: 'NAVIGATE', step: 'compareResult' });
+        expect(state.currentStep).toBe('compareResult');
+        expect(state.candidates).toHaveLength(3);
+    });
 
-        const result = buildCompareResult(state.weights, state.candidates, state.scores);
-        expect(result).not.toBeNull();
-        expect(result?.ranking).toHaveLength(3);
+    it('keeps compare result when candidate compression leaves one item', () => {
+        let state = createInitialAppState();
+
+        state = appReducer(state, { type: 'SELECT_MODE', mode: 'dinner' });
+        state = appReducer(state, { type: 'SELECT_FLOW', flowType: 'compare' });
+        state = appReducer(state, {
+            type: 'SET_CANDIDATES',
+            candidates: [
+                { id: 'a', name: '김치찌개' },
+                { id: 'b', name: '돈까스' },
+            ],
+        });
+        state = appReducer(state, { type: 'NAVIGATE', step: 'compareResult' });
+        state = appReducer(state, {
+            type: 'SET_CANDIDATES',
+            candidates: [{ id: 'a', name: '김치찌개' }],
+        });
+
+        expect(state.currentStep).toBe('compareResult');
+        expect(state.candidates).toHaveLength(1);
     });
 
     it('saves/restores state and handles invalid storage payloads', () => {
@@ -116,15 +112,23 @@ describe('flow smoke', () => {
         try {
             let state = createInitialAppState();
             state = appReducer(state, { type: 'SELECT_MODE', mode: 'lunch' });
-            state = appReducer(state, { type: 'SELECT_FLOW', flowType: 'quick' });
-            state = appReducer(state, { type: 'SET_TAGS', tags: ['한식', '국물'] });
+            state = appReducer(state, { type: 'SELECT_FLOW', flowType: 'compare' });
+            state = appReducer(state, {
+                type: 'SET_CANDIDATES',
+                candidates: [
+                    { id: 'a', name: '김치찌개' },
+                    { id: 'b', name: '돈까스' },
+                ],
+            });
+            state = appReducer(state, { type: 'NAVIGATE', step: 'compareResult' });
 
             saveAppState(state);
 
             const restored = loadAppState(createInitialAppState());
             expect(restored.mode).toBe('lunch');
-            expect(restored.flowType).toBe('quick');
-            expect(restored.quickTags).toHaveLength(2);
+            expect(restored.flowType).toBe('compare');
+            expect(restored.currentStep).toBe('compareResult');
+            expect(restored.candidates).toHaveLength(2);
 
             localStorage.setItem('appState:v1', JSON.stringify({ version: 999, state: {} }));
             const resetByVersion = loadAppState(createInitialAppState());
