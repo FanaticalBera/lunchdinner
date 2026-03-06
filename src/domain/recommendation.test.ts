@@ -48,11 +48,91 @@ describe('recommendation domain', () => {
         expect(ranked[0]?.isTie).toBe(true);
     });
 
-    it('builds compare result winner', () => {
+    it('builds compare result winner with head-to-head fields', () => {
         const result = buildCompareResult(weights, candidates, scoreMatrix);
 
         expect(result).not.toBeNull();
         expect(result?.winnerId).toBe('c2');
+        expect(result?.runnerUp?.candidateId).toBe('c1');
+        expect(result?.isTie).toBe(false);
+        expect(result?.summaryTone).toBe('close');
+        expect(result?.firstPlaceCount).toBe(1);
+        expect(result?.scoreGapFromRunnerUp).toBe(0.1);
+        expect(result?.winnerScoreByKey.price.weightedScore).toBe(1.2);
+        expect(result?.comparisonByKey?.taste.weightedGap).toBe(-0.5);
+        expect(result?.comparisonByKey?.price.leaderCandidateId).toBe('c2');
+        expect(result?.leadingCriteria).toEqual(['price']);
+        expect(result?.trailingCriteria).toEqual(['taste']);
+        expect(result?.tiedCriteria).toEqual(['distance']);
+        expect(result?.decidingCriteria).toEqual(['price']);
+    });
+
+    it('supports two-candidate compare with clear winner summary', () => {
+        const twoCandidates: Candidate[] = [
+            { id: 'a', name: 'A식당' },
+            { id: 'b', name: 'B식당' },
+        ];
+
+        const twoCandidateScores: ScoreMatrix = {
+            a: { taste: 5, price: 5, distance: 4 },
+            b: { taste: 2, price: 3, distance: 3 },
+        };
+
+        const result = buildCompareResult(weights, twoCandidates, twoCandidateScores);
+
+        expect(result).not.toBeNull();
+        expect(result?.ranking).toHaveLength(2);
+        expect(result?.winnerId).toBe('a');
+        expect(result?.runnerUp?.candidateId).toBe('b');
+        expect(result?.summaryTone).toBe('clear');
+        expect(result?.scoreGapFromRunnerUp).toBeGreaterThan(0.3);
+    });
+
+    it('keeps top candidate group when first place is tied', () => {
+        const tieCandidates: Candidate[] = [
+            { id: 'a', name: 'A식당' },
+            { id: 'b', name: 'B식당' },
+            { id: 'c', name: 'C식당' },
+        ];
+
+        const tieScores: ScoreMatrix = {
+            a: { taste: 5, price: 3, distance: 1 },
+            b: { taste: 4, price: 4, distance: 2 },
+            c: { taste: 2, price: 2, distance: 2 },
+        };
+
+        const result = buildCompareResult(weights, tieCandidates, tieScores);
+
+        expect(result).not.toBeNull();
+        expect(result?.isTie).toBe(true);
+        expect(result?.summaryTone).toBe('tie');
+        expect(result?.firstPlaceCount).toBe(2);
+        expect(result?.topCandidates.map((item) => item.candidateId)).toEqual(['a', 'b']);
+        expect(result?.comparisonByKey).toBeNull();
+        expect(result?.runnerUp?.candidateId).toBe('c');
+    });
+
+    it('ranks four candidates in score order with enriched ranking fields', () => {
+        const fourCandidates: Candidate[] = [
+            { id: 'a', name: 'A식당' },
+            { id: 'b', name: 'B식당' },
+            { id: 'c', name: 'C식당' },
+            { id: 'd', name: 'D식당' },
+        ];
+
+        const fourCandidateScores: ScoreMatrix = {
+            a: { taste: 5, price: 4, distance: 4 },
+            b: { taste: 4, price: 4, distance: 4 },
+            c: { taste: 3, price: 3, distance: 4 },
+            d: { taste: 2, price: 2, distance: 2 },
+        };
+
+        const result = buildCompareResult(weights, fourCandidates, fourCandidateScores);
+
+        expect(result).not.toBeNull();
+        expect(result?.ranking).toHaveLength(4);
+        expect(result?.ranking.map((item) => item.candidateId)).toEqual(['a', 'b', 'c', 'd']);
+        expect(result?.ranking[3]?.scoreByKey.distance.rawScore).toBe(2);
     });
 
     it('picks quick recommendation from best matched menu', () => {
