@@ -15,38 +15,38 @@
 
 ### 1) 결과 데이터 구조 확장
 
-- [ ] `src/domain/types.ts`의 `Result` 타입 확장
-- [ ] ranking 항목에 기준별 점수 정보 구조 추가
-- [ ] 필요 시 총점 외 보조 필드 추가 (`scoreByKey`, `weightedScoreByKey`, `scoreGap`, `isTie` 등)
-- [ ] 새 타입 구조를 기준으로 화면 컴포넌트 타입 오류 정리
+- [x] `src/domain/types.ts`의 `Result` 타입 확장
+- [x] ranking 항목에 기준별 점수 정보 구조 추가
+- [x] 필요 시 총점 외 보조 필드 추가 (`scoreByKey`, `weightedScoreByKey`, `scoreGap`, `isTie` 등)
+- [x] 새 타입 구조를 기준으로 화면 컴포넌트 타입 오류 정리
 
 완료 기준
-- [ ] `Result` 타입만 읽어도 결과 화면에 필요한 데이터가 무엇인지 드러난다.
-- [ ] 결과 설명용 데이터를 UI가 별도 계산 없이 받을 수 있다.
+- [x] `Result` 타입만 읽어도 결과 화면에 필요한 데이터가 무엇인지 드러난다.
+- [x] 결과 설명용 데이터를 UI가 별도 계산 없이 받을 수 있다.
 
 ### 2) `buildCompareResult()` 확장
 
-- [ ] `src/domain/recommendation.ts`에서 기준별 원점수 계산 분리
-- [ ] 기준별 가중 반영값 계산 추가
-- [ ] 1위와 2위 점수 차이 계산 추가
-- [ ] 동점 여부 및 동점 그룹 정보 계산 추가
-- [ ] 변경된 결과 구조에 맞춰 반환값 정리
+- [x] `src/domain/recommendation.ts`에서 기준별 원점수 계산 분리
+- [x] 기준별 가중 반영값 계산 추가
+- [x] 1위와 2위 점수 차이 계산 추가
+- [x] 동점 여부 및 동점 그룹 정보 계산 추가
+- [x] 변경된 결과 구조에 맞춰 반환값 정리
 
 완료 기준
-- [ ] `buildCompareResult()`만으로 결과 설명에 필요한 도메인 데이터가 모두 나온다.
-- [ ] 결과 화면에서 추가 계산 로직이 최소화된다.
+- [x] `buildCompareResult()`만으로 결과 설명에 필요한 도메인 데이터가 모두 나온다.
+- [x] 결과 화면에서 추가 계산 로직이 최소화된다.
 
 ### 3) compare 도메인 테스트 보강
 
-- [ ] `src/domain/recommendation.test.ts`에 결과 구조 확장 케이스 추가
-- [ ] 기준별 점수 합산 검증 테스트 추가
-- [ ] 1위와 2위 점수 차이 검증 테스트 추가
-- [ ] 동점 케이스 상세 검증 추가
-- [ ] 후보 2개 / 3개 / 4개 케이스 최소 샘플 확보
+- [x] `src/domain/recommendation.test.ts`에 결과 구조 확장 케이스 추가
+- [x] 기준별 점수 합산 검증 테스트 추가
+- [x] 1위와 2위 점수 차이 검증 테스트 추가
+- [x] 동점 케이스 상세 검증 추가
+- [x] 후보 2개 / 3개 / 4개 케이스 최소 샘플 확보
 
 완료 기준
-- [ ] 결과 구조 변경이 테스트로 고정된다.
-- [ ] 동점/근소한 차이/일반 승리 케이스가 모두 검증된다.
+- [x] 결과 구조 변경이 테스트로 고정된다.
+- [x] 동점/근소한 차이/일반 승리 케이스가 모두 검증된다.
 
 ### 4) 결과 화면 설명력 강화
 
@@ -121,10 +121,10 @@
 
 ## 단계별 검증 체크
 
-- [ ] 각 단계 종료 시 `npm run typecheck`
-- [ ] 각 단계 종료 시 `npm run test`
+- [x] 각 단계 종료 시 `npm run typecheck`
+- [x] 각 단계 종료 시 `npm run test`
 - [ ] compare 핵심 흐름 수동 확인: `compare1 -> compare2 -> compare3 -> compare4`
-- [ ] 동점 케이스와 일반 승리 케이스 모두 확인
+- [x] 동점 케이스와 일반 승리 케이스 모두 확인
 - [ ] 새로고침 후 상태 복원 시 compare 흐름이 깨지지 않는지 확인
 
 ## 권장 작업 순서
@@ -149,9 +149,27 @@
 - 남은 이슈:
 ```
 
+### Step 1 완료
+- 변경 파일: `src/domain/types.ts`, `src/domain/recommendation.ts`, `src/domain/recommendation.test.ts`
+- 핵심 변경: `Result` 타입에 기준별 점수 맵, 순위 아이템 타입, 총점 외 설명 필드를 추가하고 기존 결과 생성 로직이 새 구조를 채우도록 맞춤.
+- 검증 결과: `node node_modules\\typescript\\bin\\tsc --noEmit` 통과, `node node_modules\\vitest\\vitest.mjs run` 통과.
+- 남은 이슈: 결과 화면이 아직 새 필드를 사용하지 않음.
+
+### Step 2 완료
+- 변경 파일: `src/domain/types.ts`, `src/domain/recommendation.ts`, `src/domain/recommendation.test.ts`
+- 핵심 변경: `buildCompareResult()`에 `runnerUp`, `topCandidates`, `comparisonByKey`, `leading/trailing/tied/decidingCriteria`, `summaryTone` 계산을 추가해 1위 vs 2위 비교 데이터를 직접 반환하도록 확장함.
+- 검증 결과: `node node_modules\\typescript\\bin\\tsc --noEmit` 통과, `node node_modules\\vitest\\vitest.mjs run` 통과.
+- 남은 이슈: `ResultScreen`에서 이 비교 데이터를 아직 렌더하지 않음.
+
+### Step 3 완료
+- 변경 파일: `src/domain/recommendation.test.ts`
+- 핵심 변경: 일반 승리, 근소한 승부, 공동 1위, 2후보, 3후보, 4후보 케이스를 포함하도록 compare 도메인 테스트를 보강함.
+- 검증 결과: `node node_modules\\typescript\\bin\\tsc --noEmit` 통과, `node node_modules\\vitest\\vitest.mjs run` 통과.
+- 남은 이슈: Step 4에서 새 결과 구조를 실제 결과 화면 UX로 연결해야 함.
+
 ## 이번 사이클의 최소 목표
 
-- [ ] 결과 데이터 구조 확장 완료
+- [x] 결과 데이터 구조 확장 완료
 - [ ] 결과 화면 설명력 강화 완료
 - [ ] 후보 수 상한 제한 완료
 - [ ] 점수평가 화면 단기 보강 완료
