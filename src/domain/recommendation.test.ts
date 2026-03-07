@@ -5,9 +5,10 @@ import {
     pickQuickRecommendation,
     pickRandomRecommendation,
     rankCandidateTotals,
-    type MenuItem,
+    type ScoreMatrix,
+    type Weights,
 } from './recommendation';
-import type { Candidate, ScoreMatrix, Weights } from './types';
+import type { Candidate } from './types';
 
 describe('recommendation domain', () => {
     const weights: Weights = {
@@ -19,147 +20,130 @@ describe('recommendation domain', () => {
     const candidates: Candidate[] = [
         { id: 'c1', name: '김치찌개' },
         { id: 'c2', name: '돈까스' },
-        { id: 'c3', name: '비빔밥' },
+        { id: 'c3', name: '우동' },
     ];
 
     const scoreMatrix: ScoreMatrix = {
-        c1: { taste: 4, price: 2, distance: 3 },
-        c2: { taste: 3, price: 4, distance: 3 },
-        c3: { taste: 2, price: 4, distance: 4 },
+        c1: { taste: 5, price: 3, distance: 4 },
+        c2: { taste: 4, price: 5, distance: 5 },
+        c3: { taste: 3, price: 4, distance: 3 },
     };
 
-    it('calculates weighted totals', () => {
+    it('calculates weighted totals for candidates', () => {
         const totals = calculateCandidateTotals(weights, candidates, scoreMatrix);
 
-        expect(totals).toHaveLength(3);
-        expect(totals.find((item) => item.candidateId === 'c2')?.score).toBe(3.3);
-    });
-
-    it('ranks ties correctly', () => {
-        const ranked = rankCandidateTotals([
-            { candidateId: 'a', candidateName: 'A', score: 3.3 },
-            { candidateId: 'b', candidateName: 'B', score: 3.3 },
-            { candidateId: 'c', candidateName: 'C', score: 2.1 },
+        expect(totals).toEqual([
+            { candidateId: 'c1', candidateName: '김치찌개', score: 4.2 },
+            { candidateId: 'c2', candidateName: '돈까스', score: 4.5 },
+            { candidateId: 'c3', candidateName: '우동', score: 3.5 },
         ]);
-
-        expect(ranked[0]?.rank).toBe(1);
-        expect(ranked[1]?.rank).toBe(1);
-        expect(ranked[2]?.rank).toBe(3);
-        expect(ranked[0]?.isTie).toBe(true);
     });
 
-    it('builds compare result winner with head-to-head fields', () => {
+    it('ranks candidates and preserves tie metadata', () => {
+        const totals = [
+            { candidateId: 'c2', candidateName: '돈까스', score: 4.5 },
+            { candidateId: 'c1', candidateName: '김치찌개', score: 4.5 },
+            { candidateId: 'c3', candidateName: '우동', score: 3.5 },
+        ];
+
+        const ranked = rankCandidateTotals(totals);
+
+        expect(ranked).toEqual([
+            { candidateId: 'c1', candidateName: '김치찌개', score: 4.5, rank: 1, isTie: true },
+            { candidateId: 'c2', candidateName: '돈까스', score: 4.5, rank: 1, isTie: true },
+            { candidateId: 'c3', candidateName: '우동', score: 3.5, rank: 3, isTie: false },
+        ]);
+    });
+
+    it('builds compare result summary with weighted winner reason', () => {
         const result = buildCompareResult(weights, candidates, scoreMatrix);
 
         expect(result).not.toBeNull();
-        expect(result?.winnerId).toBe('c2');
-        expect(result?.runnerUp?.candidateId).toBe('c1');
-        expect(result?.isTie).toBe(false);
-        expect(result?.summaryTone).toBe('close');
-        expect(result?.firstPlaceCount).toBe(1);
-        expect(result?.scoreGapFromRunnerUp).toBe(0.1);
-        expect(result?.winnerScoreByKey.price.weightedScore).toBe(1.2);
-        expect(result?.comparisonByKey?.taste.weightedGap).toBe(-0.5);
-        expect(result?.comparisonByKey?.price.leaderCandidateId).toBe('c2');
-        expect(result?.leadingCriteria).toEqual(['price']);
-        expect(result?.trailingCriteria).toEqual(['taste']);
-        expect(result?.tiedCriteria).toEqual(['distance']);
-        expect(result?.decidingCriteria).toEqual(['price']);
+        expect(result?.winnerName).toBe('돈까스');
+        expect(result?.ranking).toHaveLength(3);
+        expect(result?.comparisonByKey?.taste.leaderCandidateName).toBe('김치찌개');
+        expect(result?.comparisonByKey?.price.leaderCandidateName).toBe('돈까스');
+        expect(result?.reason).toContain('돈까스');
     });
 
-    it('supports two-candidate compare with clear winner summary', () => {
+    it('detects ties and returns tie summary tone', () => {
         const twoCandidates: Candidate[] = [
-            { id: 'a', name: 'A식당' },
-            { id: 'b', name: 'B식당' },
+            { id: 'a', name: '국밥' },
+            { id: 'b', name: '비빔밥' },
         ];
-
         const twoCandidateScores: ScoreMatrix = {
-            a: { taste: 5, price: 5, distance: 4 },
-            b: { taste: 2, price: 3, distance: 3 },
+            a: { taste: 4, price: 4, distance: 4 },
+            b: { taste: 4, price: 4, distance: 4 },
         };
 
         const result = buildCompareResult(weights, twoCandidates, twoCandidateScores);
 
-        expect(result).not.toBeNull();
-        expect(result?.ranking).toHaveLength(2);
-        expect(result?.winnerId).toBe('a');
-        expect(result?.runnerUp?.candidateId).toBe('b');
-        expect(result?.summaryTone).toBe('clear');
-        expect(result?.scoreGapFromRunnerUp).toBeGreaterThan(0.3);
+        expect(result?.isTie).toBe(true);
+        expect(result?.summaryTone).toBe('tie');
+        expect(result?.firstPlaceCount).toBe(2);
     });
 
-    it('keeps top candidate group when first place is tied', () => {
+    it('returns close summary when winner gap is narrow', () => {
         const tieCandidates: Candidate[] = [
-            { id: 'a', name: 'A식당' },
-            { id: 'b', name: 'B식당' },
-            { id: 'c', name: 'C식당' },
+            { id: 'a', name: '냉면' },
+            { id: 'b', name: '쌀국수' },
         ];
-
         const tieScores: ScoreMatrix = {
-            a: { taste: 5, price: 3, distance: 1 },
-            b: { taste: 4, price: 4, distance: 2 },
-            c: { taste: 2, price: 2, distance: 2 },
+            a: { taste: 4, price: 4, distance: 4 },
+            b: { taste: 4, price: 4, distance: 3 },
         };
 
         const result = buildCompareResult(weights, tieCandidates, tieScores);
 
-        expect(result).not.toBeNull();
-        expect(result?.isTie).toBe(true);
-        expect(result?.summaryTone).toBe('tie');
-        expect(result?.firstPlaceCount).toBe(2);
-        expect(result?.topCandidates.map((item) => item.candidateId)).toEqual(['a', 'b']);
-        expect(result?.comparisonByKey).toBeNull();
-        expect(result?.runnerUp?.candidateId).toBe('c');
+        expect(result?.isTie).toBe(false);
+        expect(result?.summaryTone).toBe('close');
+        expect(result?.scoreGapFromRunnerUp).toBe(0.2);
+        expect(result?.reason).toContain('근소한 우세');
     });
 
-    it('ranks four candidates in score order with enriched ranking fields', () => {
+    it('supports four candidates and keeps descending rank order', () => {
         const fourCandidates: Candidate[] = [
-            { id: 'a', name: 'A식당' },
-            { id: 'b', name: 'B식당' },
-            { id: 'c', name: 'C식당' },
-            { id: 'd', name: 'D식당' },
+            { id: 'a', name: '김밥' },
+            { id: 'b', name: '라면' },
+            { id: 'c', name: '쌀국수' },
+            { id: 'd', name: '파스타' },
         ];
-
         const fourCandidateScores: ScoreMatrix = {
-            a: { taste: 5, price: 4, distance: 4 },
-            b: { taste: 4, price: 4, distance: 4 },
-            c: { taste: 3, price: 3, distance: 4 },
-            d: { taste: 2, price: 2, distance: 2 },
+            a: { taste: 4, price: 5, distance: 5 },
+            b: { taste: 3, price: 4, distance: 4 },
+            c: { taste: 5, price: 3, distance: 2 },
+            d: { taste: 4, price: 2, distance: 3 },
         };
 
         const result = buildCompareResult(weights, fourCandidates, fourCandidateScores);
 
-        expect(result).not.toBeNull();
-        expect(result?.ranking).toHaveLength(4);
-        expect(result?.ranking.map((item) => item.candidateId)).toEqual(['a', 'b', 'c', 'd']);
-        expect(result?.ranking[3]?.scoreByKey.distance.rawScore).toBe(2);
+        expect(result?.ranking.map((item) => item.candidateName)).toEqual(['김밥', '라면', '쌀국수', '파스타']);
+        expect(result?.ranking[0]?.score).toBeGreaterThan(result?.ranking[1]?.score ?? 0);
     });
 
-    it('picks quick recommendation from best matched menu', () => {
-        const menus: MenuItem[] = [
-            { id: 'm1', name: '짬뽕', tags: ['국물', '매운맛'] },
-            { id: 'm2', name: '제육덮밥', tags: ['고기', '매운맛'] },
-            { id: 'm3', name: '샐러드', tags: ['가벼운'] },
+    it('picks a quick recommendation from top matched menus', () => {
+        const menus = [
+            { id: 'm1', name: '김치찌개', tags: ['국물', '매운맛', '한식'] },
+            { id: 'm2', name: '우동', tags: ['국물', '가벼운', '일식'] },
+            { id: 'm3', name: '비빔밥', tags: ['한식', '든든한'] },
         ];
 
-        const quick = pickQuickRecommendation(['국물', '매운맛'], menus);
+        const result = pickQuickRecommendation(['국물', '한식'], menus, () => 0.49);
 
-        expect(quick).not.toBeNull();
-        expect(quick?.menu.id).toBe('m1');
-        expect(quick?.matchedTagCount).toBe(2);
+        expect(result?.menu.name).toBe('김치찌개');
+        expect(result?.matchedTags).toEqual(['국물', '한식']);
+        expect(result?.candidatePoolSize).toBe(1);
     });
 
-    it('picks random recommendation from tag pool or fallback pool', () => {
-        const menus: MenuItem[] = [
-            { id: 'm1', name: '짬뽕', tags: ['국물', '매운맛'] },
-            { id: 'm2', name: '제육덮밥', tags: ['고기', '매운맛'] },
-            { id: 'm3', name: '샐러드', tags: ['가벼운'] },
+    it('falls back to all menus when random tag match pool is empty', () => {
+        const menus = [
+            { id: 'm1', name: '김치찌개', tags: ['국물', '매운맛', '한식'] },
+            { id: 'm2', name: '우동', tags: ['국물', '가벼운', '일식'] },
+            { id: 'm3', name: '샐러드', tags: ['가벼운', '건강한'] },
         ];
 
-        const randomByTag = pickRandomRecommendation(['가벼운'], menus, () => 0.7);
-        expect(randomByTag?.id).toBe('m3');
+        const result = pickRandomRecommendation(['치즈'], menus, () => 0.8);
 
-        const randomFallback = pickRandomRecommendation(['없는태그'], menus, () => 0.8);
-        expect(randomFallback?.id).toBe('m3');
+        expect(result?.name).toBe('샐러드');
     });
 });

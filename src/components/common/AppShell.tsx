@@ -17,7 +17,7 @@ export const AppShell: React.FC<AppShellProps> = ({ children, theme }) => {
     }, [theme]);
 
     return (
-        <div className="w-full max-w-[480px] mx-auto min-h-[100dvh] flex flex-col relative overflow-x-hidden bg-[var(--bg-color)] shadow-2xl border-x border-slate-200/50 dark:border-white/5 transition-colors duration-300">
+        <div className="w-full max-w-[480px] mx-auto h-[100dvh] flex flex-col relative overflow-hidden bg-[var(--bg-color)] shadow-2xl border-x border-slate-200/50 dark:border-white/5 transition-colors duration-300">
             {children}
         </div>
     );

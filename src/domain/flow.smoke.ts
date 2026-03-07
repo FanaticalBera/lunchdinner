@@ -1,7 +1,6 @@
 ﻿import { loadAppState, saveAppState } from './persistence.ts';
-import { buildCompareResult, pickQuickRecommendation, pickRandomRecommendation, type MenuItem } from './recommendation.ts';
-import { appReducer, createInitialAppState, type AppState } from './state.ts';
-import type { CriterionKey } from './types.ts';
+import { pickQuickRecommendation, pickRandomRecommendation, type MenuItem } from './recommendation.ts';
+import { appReducer, createInitialAppState } from './state.ts';
 
 class MemoryStorage {
     private data = new Map<string, string>();
@@ -42,24 +41,6 @@ const FLOW_TEST_MENUS: MenuItem[] = [
     { id: 'm4', name: '샐러드', tags: ['가벼운', '건강한'] },
 ];
 
-function setAllScores(state: AppState, score: number): AppState {
-    const keys: CriterionKey[] = ['taste', 'price', 'distance'];
-    let next = state;
-
-    state.candidates.forEach((candidate) => {
-        keys.forEach((key) => {
-            next = appReducer(next, {
-                type: 'SET_SCORE',
-                candidateId: candidate.id,
-                criterion: key,
-                score,
-            });
-        });
-    });
-
-    return next;
-}
-
 function runQuickFlowCheck(menus: MenuItem[]): void {
     let state = createInitialAppState();
 
@@ -94,12 +75,7 @@ function runCompareFlowCheck(): void {
 
     state = appReducer(state, { type: 'SELECT_MODE', mode: 'dinner' });
     state = appReducer(state, { type: 'SELECT_FLOW', flowType: 'compare' });
-    assertEqual(state.currentStep, 'compare1', 'flowSelect -> compare1 전이 실패');
-
-    state = appReducer(state, {
-        type: 'SET_WEIGHTS',
-        weights: { taste: 50, price: 30, distance: 20 },
-    });
+    assertEqual(state.currentStep, 'compare2', 'flowSelect -> compare2 전이 실패');
 
     state = appReducer(state, {
         type: 'SET_CANDIDATES',
@@ -110,11 +86,31 @@ function runCompareFlowCheck(): void {
         ],
     });
 
-    state = setAllScores(state, 4);
+    state = appReducer(state, { type: 'NAVIGATE', step: 'compareResult' });
+    assertEqual(state.currentStep, 'compareResult', 'compare2 -> compareResult 전이 실패');
+    assertEqual(state.candidates.length, 3, '후보 개수 오류');
+}
 
-    const result = buildCompareResult(state.weights, state.candidates, state.scores);
-    assert(result !== null, 'compare 결과 계산 실패');
-    assertEqual(result?.ranking.length, 3, 'compare 랭킹 개수 오류');
+function runCandidateCompressionCheck(): void {
+    let state = createInitialAppState();
+
+    state = appReducer(state, { type: 'SELECT_MODE', mode: 'dinner' });
+    state = appReducer(state, { type: 'SELECT_FLOW', flowType: 'compare' });
+    state = appReducer(state, {
+        type: 'SET_CANDIDATES',
+        candidates: [
+            { id: 'a', name: '김치찌개' },
+            { id: 'b', name: '돈까스' },
+        ],
+    });
+    state = appReducer(state, { type: 'NAVIGATE', step: 'compareResult' });
+    state = appReducer(state, {
+        type: 'SET_CANDIDATES',
+        candidates: [{ id: 'a', name: '김치찌개' }],
+    });
+
+    assertEqual(state.currentStep, 'compareResult', '후보 압축 후 compareResult 유지 실패');
+    assertEqual(state.candidates.length, 1, '후보 압축 후 후보 개수 오류');
 }
 
 function runPersistenceCheck(): void {
@@ -126,15 +122,23 @@ function runPersistenceCheck(): void {
     try {
         let state = createInitialAppState();
         state = appReducer(state, { type: 'SELECT_MODE', mode: 'lunch' });
-        state = appReducer(state, { type: 'SELECT_FLOW', flowType: 'quick' });
-        state = appReducer(state, { type: 'SET_TAGS', tags: ['한식', '국물'] });
+        state = appReducer(state, { type: 'SELECT_FLOW', flowType: 'compare' });
+        state = appReducer(state, {
+            type: 'SET_CANDIDATES',
+            candidates: [
+                { id: 'a', name: '김치찌개' },
+                { id: 'b', name: '돈까스' },
+            ],
+        });
+        state = appReducer(state, { type: 'NAVIGATE', step: 'compareResult' });
 
         saveAppState(state);
 
         const restored = loadAppState(createInitialAppState());
         assertEqual(restored.mode, 'lunch', '복원 모드 오류');
-        assertEqual(restored.flowType, 'quick', '복원 플로우 오류');
-        assertEqual(restored.quickTags.length, 2, '복원 태그 개수 오류');
+        assertEqual(restored.flowType, 'compare', '복원 플로우 오류');
+        assertEqual(restored.currentStep, 'compareResult', '복원 스텝 오류');
+        assertEqual(restored.candidates.length, 2, '복원 후보 개수 오류');
 
         localStorage.setItem('appState:v1', JSON.stringify({ version: 999, state: {} }));
         const resetByVersion = loadAppState(createInitialAppState());
@@ -151,12 +155,9 @@ function runPersistenceCheck(): void {
 function runFlowSmoke(): void {
     runQuickFlowCheck(FLOW_TEST_MENUS);
     runCompareFlowCheck();
+    runCandidateCompressionCheck();
     runPersistenceCheck();
 }
 
 runFlowSmoke();
 console.log('Flow smoke check passed: intro -> flow -> quick/compare -> result + persistence restore');
-
-
-
-

@@ -61,7 +61,7 @@ export const QuickTagScreen: React.FC<Props> = ({ tags, selectedTags, onTagsChan
                     <h2 className="text-2xl font-display font-semibold text-[var(--text-primary)] leading-snug tracking-tight mb-2">
                         이번엔 어떤
                         <br />
-                        분위기로 갈까요?
+                        조건으로 고를까요?
                     </h2>
                     <p className="text-sm font-medium text-[var(--text-secondary)]">
                         여러 개를 골라도 괜찮아요.

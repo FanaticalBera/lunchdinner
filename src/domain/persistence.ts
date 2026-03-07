@@ -1,23 +1,24 @@
-﻿import { createInitialAppState, type AppState } from './state.ts';
-import type { Candidate, CriterionKey, FlowType, Mode, QuickTag, ScoreMatrix, Step, Weights } from './types';
+import { createInitialAppState, type AppState } from './state';
+import type { Candidate, FlowType, Mode, QuickTag, Step } from './types';
 
 const APP_STATE_VERSION = 1;
-const APP_STATE_STORAGE_KEY = `appState:v${APP_STATE_VERSION}`;
+const APP_STATE_STORAGE_KEY = 'appState:v' + APP_STATE_VERSION;
 
 const STEP_SET: Set<Step> = new Set([
     'intro',
     'flowSelect',
     'quick1',
     'quick2',
-    'compare1',
     'compare2',
-    'compare3',
-    'compare4',
+    'compareResult',
 ]);
 
 const MODE_SET: Set<Mode> = new Set(['lunch', 'dinner']);
 const FLOW_SET: Set<FlowType> = new Set(['quick', 'compare', 'random']);
-const CRITERION_SET: Set<CriterionKey> = new Set(['taste', 'price', 'distance']);
+const LEGACY_SEEDED_CANDIDATES = new Map<string, string>([
+    ['1', '\uAE40\uCE58\uCC0C\uAC1C \uC804\uBB38\uC810'],
+    ['2', '\uC606\uC9D1 \uB3C8\uAE4C\uC2A4'],
+]);
 
 interface PersistedEnvelope {
     version: number;
@@ -30,18 +31,6 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 
 function toFiniteNumber(value: unknown, fallback: number): number {
     return typeof value === 'number' && Number.isFinite(value) ? value : fallback;
-}
-
-function sanitizeWeights(value: unknown, fallback: Weights): Weights {
-    if (!isRecord(value)) {
-        return { ...fallback };
-    }
-
-    return {
-        taste: Math.max(0, toFiniteNumber(value.taste, fallback.taste)),
-        price: Math.max(0, toFiniteNumber(value.price, fallback.price)),
-        distance: Math.max(0, toFiniteNumber(value.distance, fallback.distance)),
-    };
 }
 
 function sanitizeCandidates(value: unknown, fallback: Candidate[]): Candidate[] {
@@ -64,41 +53,14 @@ function sanitizeCandidates(value: unknown, fallback: Candidate[]): Candidate[] 
             return;
         }
 
+        if (LEGACY_SEEDED_CANDIDATES.get(id) === name) {
+            return;
+        }
+
         sanitized.push(icon ? { id, name, icon } : { id, name });
     });
 
     return sanitized.length > 0 ? sanitized : fallback.map((candidate) => ({ ...candidate }));
-}
-
-function sanitizeScores(value: unknown, validCandidateIds: Set<string>): ScoreMatrix {
-    if (!isRecord(value)) {
-        return {};
-    }
-
-    const nextScores: ScoreMatrix = {};
-
-    Object.entries(value).forEach(([candidateId, scoreValue]) => {
-        if (!validCandidateIds.has(candidateId) || !isRecord(scoreValue)) {
-            return;
-        }
-
-        const partial: Partial<Record<CriterionKey, number>> = {};
-
-        Object.entries(scoreValue).forEach(([key, rawScore]) => {
-            if (!CRITERION_SET.has(key as CriterionKey)) {
-                return;
-            }
-
-            const numeric = toFiniteNumber(rawScore, NaN);
-            if (!Number.isNaN(numeric)) {
-                partial[key as CriterionKey] = Math.max(0, numeric);
-            }
-        });
-
-        nextScores[candidateId] = partial;
-    });
-
-    return nextScores;
 }
 
 function sanitizeTags(value: unknown): QuickTag[] {
@@ -124,11 +86,7 @@ function sanitizeAppState(rawState: unknown, fallback: AppState): AppState {
     const mode = MODE_SET.has(rawState.mode as Mode) ? (rawState.mode as Mode) : null;
     const flowType = FLOW_SET.has(rawState.flowType as FlowType) ? (rawState.flowType as FlowType) : 'quick';
     const currentStep = STEP_SET.has(rawState.currentStep as Step) ? (rawState.currentStep as Step) : 'intro';
-
-    const weights = sanitizeWeights(rawState.weights, fallback.weights);
     const candidates = sanitizeCandidates(rawState.candidates, fallback.candidates);
-    const candidateIdSet = new Set(candidates.map((candidate) => candidate.id));
-    const scores = sanitizeScores(rawState.scores, candidateIdSet);
     const quickTags = sanitizeTags(rawState.quickTags);
     const recommendationNonce = Math.max(0, Math.floor(toFiniteNumber(rawState.recommendationNonce, 0)));
 
@@ -136,9 +94,7 @@ function sanitizeAppState(rawState: unknown, fallback: AppState): AppState {
         currentStep,
         mode,
         flowType,
-        weights,
         candidates,
-        scores,
         quickTags,
         recommendationNonce,
     };
@@ -205,6 +161,3 @@ export function saveAppState(state: AppState): void {
         // Ignore storage errors and keep in-memory state.
     }
 }
-
-
-

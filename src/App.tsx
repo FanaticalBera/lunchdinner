@@ -1,40 +1,24 @@
-﻿import { useEffect, useMemo, useReducer } from 'react';
+import { useEffect, useMemo, useReducer } from 'react';
 import { AppShell } from './components/common/AppShell';
 import { IntroScreen } from './screens/IntroScreen';
 import { FlowSelectScreen } from './screens/FlowSelectScreen';
 import { QuickTagScreen } from './screens/QuickTagScreen';
 import { QuickResultScreen } from './screens/QuickResultScreen';
-import { WeightWizardScreen } from './screens/WeightWizardScreen';
 import { CandidateInputScreen } from './screens/CandidateInputScreen';
-import { ScoringBoardScreen } from './screens/ScoringBoardScreen';
-import { ResultScreen } from './screens/ResultScreen';
+import { CompareResultScreen } from './screens/CompareResultScreen';
 import { appReducer, initialAppState, type AppState } from './domain/state';
 import { loadAppState, saveAppState } from './domain/persistence';
 import {
-    buildCompareResult,
     pickQuickRecommendation,
     pickRandomRecommendation,
     scoreMenusByTags,
     type MenuItem,
 } from './domain/recommendation';
-import type { Candidate, CriterionKey, FlowType, Mode, QuickTag, Step, Weights } from './domain/types';
+import type { Candidate, FlowType, Mode, QuickTag, Step } from './domain/types';
 import menuDbRaw from './data/menu-db.json';
 
 const MENU_DB = menuDbRaw as MenuItem[];
-const REQUIRED_SCORE_KEYS: CriterionKey[] = ['taste', 'price', 'distance'];
-
-function hasCompleteScores(candidates: Candidate[], scores: AppState['scores']): boolean {
-    if (candidates.length < 2) {
-        return false;
-    }
-
-    return candidates.every((candidate) =>
-        REQUIRED_SCORE_KEYS.every((key) => {
-            const score = scores[candidate.id]?.[key];
-            return typeof score === 'number';
-        })
-    );
-}
+const MAX_COMPARE_CANDIDATES = 4;
 
 function isMenuAvailableForMode(menu: MenuItem, mode: Mode | null): boolean {
     if (!mode) {
@@ -65,41 +49,22 @@ function resolveGuardedStep(state: AppState): Step {
                 return 'quick1';
             }
             return 'quick2';
-        case 'compare1':
-            if (!state.mode) {
-                return 'intro';
-            }
-            return state.flowType === 'compare' ? 'compare1' : 'flowSelect';
         case 'compare2':
             if (!state.mode) {
                 return 'intro';
             }
             return state.flowType === 'compare' ? 'compare2' : 'flowSelect';
-        case 'compare3':
+        case 'compareResult':
             if (!state.mode) {
                 return 'intro';
             }
             if (state.flowType !== 'compare') {
                 return 'flowSelect';
             }
-            if (state.candidates.length < 2) {
+            if (state.candidates.length < 1 || state.candidates.length > MAX_COMPARE_CANDIDATES) {
                 return 'compare2';
             }
-            return 'compare3';
-        case 'compare4':
-            if (!state.mode) {
-                return 'intro';
-            }
-            if (state.flowType !== 'compare') {
-                return 'flowSelect';
-            }
-            if (state.candidates.length < 2) {
-                return 'compare2';
-            }
-            if (!hasCompleteScores(state.candidates, state.scores)) {
-                return 'compare3';
-            }
-            return 'compare4';
+            return 'compareResult';
         default:
             return 'intro';
     }
@@ -111,9 +76,7 @@ function App() {
         currentStep,
         mode,
         flowType,
-        weights,
         candidates,
-        scores,
         quickTags,
         recommendationNonce,
     } = state;
@@ -162,16 +125,8 @@ function App() {
         dispatch({ type: 'SELECT_FLOW', flowType: flow });
     };
 
-    const handleWeightsChange = (nextWeights: Weights) => {
-        dispatch({ type: 'SET_WEIGHTS', weights: nextWeights });
-    };
-
     const handleCandidatesChange = (nextCandidates: Candidate[]) => {
         dispatch({ type: 'SET_CANDIDATES', candidates: nextCandidates });
-    };
-
-    const handleScoreChange = (candidateId: string, criterion: CriterionKey, score: number) => {
-        dispatch({ type: 'SET_SCORE', candidateId, criterion, score });
     };
 
     const handleTagsChange = (tags: QuickTag[]) => {
@@ -186,10 +141,6 @@ function App() {
         dispatch({ type: 'RESET' });
     };
 
-    const handleReWeight = () => {
-        dispatch({ type: 'NAVIGATE', step: 'compare1' });
-    };
-
     const renderScreen = () => {
         switch (guardedStep) {
             case 'intro':
@@ -198,10 +149,9 @@ function App() {
                 return (
                     <FlowSelectScreen
                         onSelectFlow={handleFlowSelect}
-                        onBack={() => dispatch({ type: 'NAVIGATE', step: 'intro' })}
+                        onBack={handleRestart}
                     />
                 );
-
             case 'quick1':
                 return (
                     <QuickTagScreen
@@ -238,47 +188,27 @@ function App() {
                     />
                 );
             }
-
-            case 'compare1':
-                return (
-                    <WeightWizardScreen
-                        weights={weights}
-                        onWeightsChange={handleWeightsChange}
-                        onNext={() => dispatch({ type: 'NAVIGATE', step: 'compare2' })}
-                        onBack={() => dispatch({ type: 'NAVIGATE', step: 'flowSelect' })}
-                    />
-                );
             case 'compare2':
                 return (
                     <CandidateInputScreen
                         candidates={candidates}
+                        maxCandidates={MAX_COMPARE_CANDIDATES}
                         onCandidatesChange={handleCandidatesChange}
-                        onNext={() => dispatch({ type: 'NAVIGATE', step: 'compare3' })}
-                        onBack={() => dispatch({ type: 'NAVIGATE', step: 'compare1' })}
+                        onNext={() => dispatch({ type: 'NAVIGATE', step: 'compareResult' })}
+                        onBack={() => dispatch({ type: 'NAVIGATE', step: 'flowSelect' })}
                     />
                 );
-            case 'compare3':
+            case 'compareResult':
                 return (
-                    <ScoringBoardScreen
+                    <CompareResultScreen
                         candidates={candidates}
-                        scores={scores}
-                        onScoreChange={handleScoreChange}
-                        onNext={() => dispatch({ type: 'NAVIGATE', step: 'compare4' })}
+                        drawNonce={recommendationNonce}
+                        onRedraw={handleRefetchRecommendation}
+                        onRemoveCandidate={(id) => handleCandidatesChange(candidates.filter((candidate) => candidate.id !== id))}
                         onBack={() => dispatch({ type: 'NAVIGATE', step: 'compare2' })}
+                        onHome={handleRestart}
                     />
                 );
-            case 'compare4': {
-                const result = buildCompareResult(weights, candidates, scores);
-                return (
-                    <ResultScreen
-                        result={result}
-                        candidates={candidates}
-                        onRestart={handleRestart}
-                        onReWeight={handleReWeight}
-                    />
-                );
-            }
-
             default:
                 return <IntroScreen onSelectMode={handleModeSelect} />;
         }
@@ -288,5 +218,3 @@ function App() {
 }
 
 export default App;
-
-
