@@ -1,8 +1,8 @@
-﻿import { createInitialAppState, type AppState } from './state';
+import { createInitialAppState, type AppState } from './state';
 import type { Candidate, FlowType, Mode, QuickTag, Step } from './types';
 
 const APP_STATE_VERSION = 1;
-const APP_STATE_STORAGE_KEY = `appState:v${APP_STATE_VERSION}`;
+const APP_STATE_STORAGE_KEY = 'appState:v' + APP_STATE_VERSION;
 
 const STEP_SET: Set<Step> = new Set([
     'intro',
@@ -15,6 +15,10 @@ const STEP_SET: Set<Step> = new Set([
 
 const MODE_SET: Set<Mode> = new Set(['lunch', 'dinner']);
 const FLOW_SET: Set<FlowType> = new Set(['quick', 'compare', 'random']);
+const LEGACY_SEEDED_CANDIDATES = new Map<string, string>([
+    ['1', '\uAE40\uCE58\uCC0C\uAC1C \uC804\uBB38\uC810'],
+    ['2', '\uC606\uC9D1 \uB3C8\uAE4C\uC2A4'],
+]);
 
 interface PersistedEnvelope {
     version: number;
@@ -46,6 +50,10 @@ function sanitizeCandidates(value: unknown, fallback: Candidate[]): Candidate[] 
         const icon = typeof item.icon === 'string' ? item.icon : undefined;
 
         if (!id || !name) {
+            return;
+        }
+
+        if (LEGACY_SEEDED_CANDIDATES.get(id) === name) {
             return;
         }
 

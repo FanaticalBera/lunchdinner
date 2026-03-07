@@ -1,4 +1,4 @@
-﻿import { useEffect, useMemo, useReducer } from 'react';
+import { useEffect, useMemo, useReducer } from 'react';
 import { AppShell } from './components/common/AppShell';
 import { IntroScreen } from './screens/IntroScreen';
 import { FlowSelectScreen } from './screens/FlowSelectScreen';
@@ -149,7 +149,7 @@ function App() {
                 return (
                     <FlowSelectScreen
                         onSelectFlow={handleFlowSelect}
-                        onBack={() => dispatch({ type: 'NAVIGATE', step: 'intro' })}
+                        onBack={handleRestart}
                     />
                 );
             case 'quick1':

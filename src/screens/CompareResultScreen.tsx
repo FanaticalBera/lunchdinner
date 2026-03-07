@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { House, PencilSimple, ArrowCounterClockwise, Check, Confetti } from '@phosphor-icons/react';
 import { ProgressBar } from '../components/common/ProgressBar';
@@ -37,14 +37,14 @@ export const CompareResultScreen: React.FC<Props> = ({
     const [phase, setPhase] = useState<Phase>('rolling');
     const [removedName, setRemovedName] = useState<string | null>(null);
     const [winnerCandidate, setWinnerCandidate] = useState<Candidate | null>(null);
-    const [rollingCandidate, setRollingCandidate] = useState<Candidate | null>(null);
+    const [rouletteItems, setRouletteItems] = useState<{ key: string, candidate: Candidate }[]>([]);
     const [showConfetti, setShowConfetti] = useState(false);
 
     useEffect(() => {
-        if (candidates.length === 0) {
+        if (candidates.length <= 1) {
             setPhase('winner');
-            setWinnerCandidate(null);
-            setShowConfetti(false);
+            setWinnerCandidate(candidates[0] ?? null);
+            setShowConfetti(true);
             return;
         }
 
@@ -56,25 +56,28 @@ export const CompareResultScreen: React.FC<Props> = ({
 
         if (!pickedWinner) return;
 
-        // 고속 플리퍼(슬롯머신) 효과를 위한 타이머
-        const duration = 1200; // 1.2초 동안 돌아감
-        const flipInterval = 60; // 0.06초마다 후보 변경
+        const items: { key: string, candidate: Candidate }[] = [];
+        const spins = 30; // 룰렛이 더 오랫동안 무한대처럼 돌아가도록 항목 개수 증가
+        for (let i = 0; i < spins; i++) {
+            let rand = candidates[Math.floor(Math.random() * candidates.length)];
+            // 이전 항목과 같으면 가급적 다르게 (후보가 2개 이상일 때)
+            if (i > 0 && items[i - 1].candidate.id === rand.id && candidates.length > 1) {
+                const others = candidates.filter(c => c.id !== rand.id);
+                rand = others[Math.floor(Math.random() * others.length)];
+            }
+            items.push({ key: `roll-${drawNonce}-${i}`, candidate: rand });
+        }
+        items.push({ key: `roll-${drawNonce}-winner`, candidate: pickedWinner });
 
-        const interval = window.setInterval(() => {
-            const randomC = candidates[Math.floor(Math.random() * candidates.length)];
-            setRollingCandidate(randomC);
-        }, flipInterval);
+        // 마지막 당첨 항목 아래에도 비어보이지 않게 (무한 스크롤처럼 보이게) 더미 항목 3개 추가
+        for (let i = 0; i < 3; i++) {
+            items.push({
+                key: `roll-${drawNonce}-dummy-${i}`,
+                candidate: candidates[Math.floor(Math.random() * candidates.length)]
+            });
+        }
 
-        const timer = window.setTimeout(() => {
-            window.clearInterval(interval);
-            setPhase('winner');
-            setShowConfetti(true);
-        }, duration);
-
-        return () => {
-            window.clearInterval(interval);
-            window.clearTimeout(timer);
-        };
+        setRouletteItems(items);
     }, [drawNonce, candidates]);
 
     const handleRemoveAndRedraw = () => {
@@ -112,7 +115,7 @@ export const CompareResultScreen: React.FC<Props> = ({
 
             <div className="flex-1 flex flex-col items-center justify-center px-6 pb-20 relative">
 
-                {/* 상단 제거 알림 (방금 000 제외됨) */}
+                {/* 상단 제거 알림 */}
                 <div className="absolute top-6 left-0 right-0 flex justify-center h-8">
                     <AnimatePresence>
                         {removedName && (
@@ -149,25 +152,48 @@ export const CompareResultScreen: React.FC<Props> = ({
 
                         {/* 메인 카드 영역 */}
                         <div className="w-full bg-[var(--surface-color)] rounded-3xl border border-[var(--border-color)] shadow-[var(--shadow-md)] flex flex-col items-center text-center relative overflow-hidden h-[280px]">
-                            <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/60 via-transparent to-amber-50/40 dark:from-emerald-500/5 dark:to-amber-500/5 pointer-events-none" />
+                            <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/60 via-transparent to-amber-50/40 dark:opacity-0 pointer-events-none z-0" />
 
                             <div className="flex-1 w-full flex flex-col items-center justify-center relative p-8">
                                 <AnimatePresence mode="popLayout">
-                                    {phase === 'rolling' && rollingCandidate ? (
+                                    {phase === 'rolling' && rouletteItems.length > 0 ? (
                                         <motion.div
-                                            key={`roll-${rollingCandidate.id}-${Date.now()}`}
-                                            initial={{ y: 50, opacity: 0, scale: 0.8 }}
-                                            animate={{ y: 0, opacity: 1, scale: 1 }}
-                                            exit={{ y: -50, opacity: 0, scale: 0.8 }}
-                                            transition={{ duration: 0.1 }}
-                                            className="absolute flex flex-col items-center justify-center w-full"
+                                            key={`rolling-${drawNonce}`}
+                                            exit={{ opacity: 0, scale: 0.8, transition: { duration: 0.2 } }}
+                                            className="absolute inset-0 flex flex-col items-center justify-center w-full overflow-hidden"
                                         >
-                                            <div className="w-24 h-24 bg-slate-50 dark:bg-zinc-800 rounded-3xl flex items-center justify-center mb-5 border border-slate-100 dark:border-zinc-700">
-                                                <span className="text-5xl opacity-40 blur-[1px]">{rollingCandidate.icon ?? '🎲'}</span>
-                                            </div>
-                                            <h1 className="text-3xl font-bold font-display text-[var(--text-secondary)] tracking-tight opacity-40 blur-[1px]">
-                                                {rollingCandidate.name}
-                                            </h1>
+                                            {/* 중앙부 포커스 인디케이터 (Glassmorphism) */}
+                                            <div className="absolute top-1/2 left-4 right-4 h-[120px] -translate-y-1/2 bg-white/40 dark:border-white/10 dark:bg-black/20 rounded-2xl border border-white/60 shadow-sm pointer-events-none z-10" />
+
+                                            <motion.div
+                                                initial={{ y: 0 }}
+                                                // items 배열에서 당첨 항목(인덱스: spins)까지만 이동하도록 y값 설정
+                                                animate={{ y: -(30) * 120 }}
+                                                transition={{
+                                                    duration: 3.5,
+                                                    ease: [0.1, 0.0, 0.1, 1] // 급격하게 감속하면서 무한 스크롤 느낌을 줌
+                                                }}
+                                                className="flex flex-col items-center w-full absolute top-[80px] z-0"
+                                                onAnimationComplete={() => {
+                                                    setPhase('winner');
+                                                    setShowConfetti(true);
+                                                }}
+                                            >
+                                                {rouletteItems.map((item) => (
+                                                    <div key={item.key} className="h-[120px] flex flex-col items-center justify-center w-full shrink-0 relative px-6">
+                                                        <div className="w-16 h-16 flex items-center justify-center transition-all bg-slate-50/80 dark:bg-zinc-800/80 rounded-[1.25rem] border border-slate-100/50 dark:border-zinc-700/50 shadow-sm mb-2 opacity-80 backdrop-blur-sm">
+                                                            <span className="text-3xl opacity-90">{item.candidate.icon ?? '🍽️'}</span>
+                                                        </div>
+                                                        <h1 className="font-bold font-display tracking-tight text-xl text-[var(--text-secondary)] opacity-80 truncate w-full">
+                                                            {item.candidate.name}
+                                                        </h1>
+                                                    </div>
+                                                ))}
+                                            </motion.div>
+
+                                            {/* 위/아래 가장자리 그라데이션 가림막 (부드럽게) */}
+                                            <div className="absolute top-0 left-0 right-0 h-20 bg-gradient-to-b from-[var(--surface-color)] to-transparent pointer-events-none z-20" />
+                                            <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-[var(--surface-color)] to-transparent pointer-events-none z-20" />
                                         </motion.div>
                                     ) : phase === 'winner' && winnerCandidate ? (
                                         <motion.div
@@ -185,7 +211,7 @@ export const CompareResultScreen: React.FC<Props> = ({
                                                 <span className="text-6xl drop-shadow-md">{winnerCandidate.icon ?? '🍽️'}</span>
                                             </motion.div>
 
-                                            <h1 className="relative z-10 text-4xl font-bold font-display text-[var(--text-primary)] tracking-tighter leading-tight drop-shadow-sm">
+                                            <h1 className="relative z-10 text-4xl font-bold font-display text-[var(--text-primary)] tracking-tighter leading-tight drop-shadow-sm truncate w-full px-4">
                                                 {winnerCandidate.name}
                                             </h1>
 
@@ -233,8 +259,7 @@ export const CompareResultScreen: React.FC<Props> = ({
                         </motion.div>
 
                         <div className="flex flex-col items-center gap-3 w-full mt-2">
-                            {/* 세컨드 액션: 깔끔한 가로 가득 채우는 라인 버튼 */}
-                            {candidates.length > 1 && (
+                            {candidates.length > 2 && (
                                 <motion.button
                                     initial={{ y: 20, opacity: 0 }}
                                     animate={{ y: 0, opacity: 1 }}
@@ -248,7 +273,6 @@ export const CompareResultScreen: React.FC<Props> = ({
                                 </motion.button>
                             )}
 
-                            {/* 서드 액션: 테두리 없는 순수 텍스트 링크 타입 */}
                             <motion.button
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}

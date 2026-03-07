@@ -19,8 +19,8 @@ export type AppAction =
     | { type: 'RESET' };
 
 const INITIAL_CANDIDATES: Candidate[] = [
-    { id: '1', name: '김치찌개 전문점', icon: '🍲' },
-    { id: '2', name: '옆집 돈까스', icon: '🍱' },
+    // { id: '1', name: '김치찌개 전문점', icon: '🍲' },
+    // { id: '2', name: '옆집 돈까스', icon: '🍱' },
 ];
 
 export function createInitialAppState(): AppState {
