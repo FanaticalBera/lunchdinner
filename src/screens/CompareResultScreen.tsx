@@ -5,6 +5,7 @@ import { ProgressBar } from '../components/common/ProgressBar';
 import { BottomActionBar } from '../components/common/BottomActionBar';
 import { PrimaryButton } from '../components/common/PrimaryButton';
 import type { Candidate } from '../domain/types';
+import { getBadgeStyle, getBadgeText } from '../utils/badgeUtils';
 
 interface Props {
     candidates: Candidate[];
@@ -152,7 +153,7 @@ export const CompareResultScreen: React.FC<Props> = ({
 
                         {/* 메인 카드 영역 */}
                         <div className="w-full bg-[var(--surface-color)] rounded-3xl border border-[var(--border-color)] shadow-[var(--shadow-md)] flex flex-col items-center text-center relative overflow-hidden h-[280px]">
-                            <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/60 via-transparent to-amber-50/40 dark:opacity-0 pointer-events-none z-0" />
+                            <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 via-transparent to-amber-500/10 pointer-events-none z-0" />
 
                             <div className="flex-1 w-full flex flex-col items-center justify-center relative p-8">
                                 <AnimatePresence mode="popLayout">
@@ -181,8 +182,8 @@ export const CompareResultScreen: React.FC<Props> = ({
                                             >
                                                 {rouletteItems.map((item) => (
                                                     <div key={item.key} className="h-[120px] flex flex-col items-center justify-center w-full shrink-0 relative px-6">
-                                                        <div className="w-16 h-16 flex items-center justify-center transition-all bg-slate-50/80 dark:bg-zinc-800/80 rounded-[1.25rem] border border-slate-100/50 dark:border-zinc-700/50 shadow-sm mb-2 opacity-80 backdrop-blur-sm">
-                                                            <span className="text-3xl opacity-90">{item.candidate.icon ?? '🍽️'}</span>
+                                                        <div className={`w-16 h-16 flex items-center justify-center transition-all rounded-[1.25rem] border shadow-sm mb-2 opacity-80 backdrop-blur-sm ${getBadgeStyle(item.candidate.name).bgClass} ${getBadgeStyle(item.candidate.name).textClass} ${getBadgeStyle(item.candidate.name).borderClass}`}>
+                                                            <span className="text-3xl font-bold opacity-90">{getBadgeText(item.candidate.name)}</span>
                                                         </div>
                                                         <h1 className="font-bold font-display tracking-tight text-xl text-[var(--text-secondary)] opacity-80 truncate w-full">
                                                             {item.candidate.name}
@@ -206,9 +207,9 @@ export const CompareResultScreen: React.FC<Props> = ({
                                             <motion.div
                                                 animate={showConfetti ? { scale: [1, 1.15, 1], rotate: [0, -8, 8, 0] } : {}}
                                                 transition={{ duration: 0.6, delay: 0.3 }}
-                                                className="relative z-10 w-28 h-28 bg-emerald-50 dark:bg-emerald-500/10 rounded-3xl flex items-center justify-center mb-5 shadow-inner border-2 border-emerald-200 dark:border-emerald-500/20"
+                                                className={`relative z-10 w-28 h-28 rounded-3xl flex items-center justify-center mb-5 shadow-inner border-2 ${getBadgeStyle(winnerCandidate.name).bgClass} ${getBadgeStyle(winnerCandidate.name).textClass} ${getBadgeStyle(winnerCandidate.name).borderClass}`}
                                             >
-                                                <span className="text-6xl drop-shadow-md">{winnerCandidate.icon ?? '🍽️'}</span>
+                                                <span className="text-6xl font-bold drop-shadow-md">{getBadgeText(winnerCandidate.name)}</span>
                                             </motion.div>
 
                                             <h1 className="relative z-10 text-4xl font-bold font-display text-[var(--text-primary)] tracking-tighter leading-tight drop-shadow-sm truncate w-full px-4">

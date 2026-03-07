@@ -8,6 +8,8 @@ import { HelperText } from '../components/common/HelperText';
 import { X, Plus, Storefront } from '@phosphor-icons/react';
 import type { Candidate } from '../domain/types';
 
+import { getBadgeStyle, getBadgeText } from '../utils/badgeUtils';
+
 interface Props {
     candidates: Candidate[];
     maxCandidates: number;
@@ -106,7 +108,7 @@ export const CandidateInputScreen: React.FC<Props> = ({
             return;
         }
 
-        onCandidatesChange([...candidates, { id: Date.now().toString(), name: trimmed, icon: '🍽️' }]);
+        onCandidatesChange([...candidates, { id: Date.now().toString(), name: trimmed }]);
         setInputValue('');
         setFeedbackMessage(null);
     };
@@ -253,6 +255,7 @@ export const CandidateInputScreen: React.FC<Props> = ({
                     <AnimatePresence mode="popLayout">
                         {candidates.map((candidate) => {
                             const isEditing = editingCandidateId === candidate.id;
+                            const badgeStyle = getBadgeStyle(candidate.name);
 
                             return (
                                 <motion.div
@@ -266,8 +269,8 @@ export const CandidateInputScreen: React.FC<Props> = ({
                                 >
                                     <div className="flex items-start justify-between gap-3">
                                         <div className="flex items-center gap-3 min-w-0 flex-1">
-                                            <div className="w-10 h-10 rounded-full bg-[var(--bg-color)] flex items-center justify-center text-lg shadow-inner border border-[var(--border-color)] shrink-0">
-                                                {candidate.icon ?? '🍽️'}
+                                            <div className={`w-10 h-10 rounded-full flex items-center justify-center text-lg font-bold shadow-sm border shrink-0 ${badgeStyle.bgClass} ${badgeStyle.textClass} ${badgeStyle.borderClass}`}>
+                                                {getBadgeText(candidate.name)}
                                             </div>
                                             {isEditing ? (
                                                 <input
